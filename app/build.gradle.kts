@@ -48,7 +48,6 @@ android {
         }
     }
 }
-
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -67,5 +66,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.androidx.hilt.navigation.compose)
-
+    implementation("androidx.compose.material3:material3:1.3.0")
 }
