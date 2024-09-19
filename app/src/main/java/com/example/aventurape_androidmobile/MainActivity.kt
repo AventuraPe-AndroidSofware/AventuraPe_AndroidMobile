@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.example.aventurape_androidmobile.components.BottomNavigationAdventurer
 import com.example.aventurape_androidmobile.navigation.AdventurerNavigation
 import com.example.aventurape_androidmobile.ui.theme.AventuraPe_AndroidMobileTheme
 
@@ -37,7 +36,7 @@ fun MainScreen(){
     val navController= rememberNavController()
     Scaffold (
         bottomBar ={
-            BottomNavigationAdventurer(navController)
+            //BottomNavigationAdventurer(navController)
         }
     ){
         padding->
