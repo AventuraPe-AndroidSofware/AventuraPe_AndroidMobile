@@ -1,0 +1,64 @@
+{
+  "profiles": [
+    {
+      "idProfile": "1",
+      "firstName": "María",
+      "lastName": "García",
+      "email": "maria.garcia@email.com",
+      "street": "Calle Mayor",
+      "number": "23",
+      "city": "Madrid",
+      "postalCode": "28001",
+      "country": "España",
+      "gender": "Femenino"
+    },
+    {
+      "idProfile": "2",
+      "firstName": "Juan",
+      "lastName": "Rodríguez",
+      "email": "juan.rodriguez@email.com",
+      "street": "Avenida Diagonal",
+      "number": "456",
+      "city": "Barcelona",
+      "postalCode": "08006",
+      "country": "España",
+      "gender": "Masculino"
+    },
+    {
+      "idProfile": "3",
+      "firstName": "Ana",
+      "lastName": "Martínez",
+      "email": "ana.martinez@email.com",
+      "street": "Calle San Vicente",
+      "number": "78",
+      "city": "Valencia",
+      "postalCode": "46002",
+      "country": "España",
+      "gender": "Femenino"
+    },
+    {
+      "idProfile": "4",
+      "firstName": "Carlos",
+      "lastName": "López",
+      "email": "carlos.lopez@email.com",
+      "street": "Calle Gran Vía",
+      "number": "12",
+      "city": "Bilbao",
+      "postalCode": "48001",
+      "country": "España",
+      "gender": "Masculino"
+    },
+    {
+      "idProfile": "5",
+      "firstName": "Laura",
+      "lastName": "Fernández",
+      "email": "laura.fernandez@email.com",
+      "street": "Avenida de la Constitución",
+      "number": "34",
+      "city": "Sevilla",
+      "postalCode": "41001",
+      "country": "España",
+      "gender": "Femenino"
+    }
+  ]
+}

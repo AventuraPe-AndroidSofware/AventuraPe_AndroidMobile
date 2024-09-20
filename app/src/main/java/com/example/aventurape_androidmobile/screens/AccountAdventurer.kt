@@ -1,14 +1,10 @@
 package com.example.aventurape_androidmobile.screens
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,27 +22,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 import com.example.aventurape_androidmobile.R
 
+sealed class AccountAdventurerDestination(val route: String) {
+    object AccountAdventurer : AccountAdventurerDestination("accountA")
+    object AccountInformation : AccountAdventurerDestination("accountInformation")
+    object BestAdventures : AccountAdventurerDestination("bestAdventuresA")
+}
 @Composable
-fun AccountAdventurer(){
-    val navController = rememberNavController()
+fun AccountAdventurer(navController:NavController){
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        // User avatar and email
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -80,9 +73,8 @@ fun AccountAdventurer(){
             title = "Información personal",
             tint = Color.Black,
             onClick = {
-                navController.navigate("accountInformation")
+                navController.navigate(AccountAdventurerDestination.AccountInformation.route)
             }
-
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -93,7 +85,7 @@ fun AccountAdventurer(){
             title = "Mejores calificaciones",
             tint = Color.Black,
             onClick = {
-                navController.navigate("bestAdventures")
+                navController.navigate(AccountAdventurerDestination.BestAdventures.route)
             }
         )
 
@@ -111,7 +103,7 @@ fun ProfileMenuItem(icon: ImageVector, title: String, tint: Color = MaterialThem
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = tint // Aplicar el color aquí
+            tint = tint
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
@@ -123,14 +115,5 @@ fun ProfileMenuItem(icon: ImageVector, title: String, tint: Color = MaterialThem
             imageVector = Icons.Default.KeyboardArrowRight,
             contentDescription = "Navigate"
         )
-    }
-}
-@Composable
-fun AccountAdventurerNavHost() {
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "accountAdventurer") {
-        composable("accountAdventurer") { AccountAdventurer() }
-        composable("accountInformation") { AccountInformation() }
-        composable("bestAdventures") { BestAdventures() }
     }
 }
