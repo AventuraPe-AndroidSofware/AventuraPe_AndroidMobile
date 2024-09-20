@@ -1,4 +1,4 @@
-package com.example.aventurape_androidmobile.navigation
+package com.example.aventurape_androidmobile.domains.authentication.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,16 +30,16 @@ import coil.request.ImageRequest
 import com.example.aventurape_androidmobile.Beans.Adventure
 import com.example.aventurape_androidmobile.Beans.Review
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
-import com.example.aventurape_androidmobile.utils.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 // Importa SnackbarHostState y SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarHost
 import com.example.aventurape_androidmobile.Beans.Comment
+import com.example.aventurape_androidmobile.domains.authentication.screens.states.getComments
+import com.example.aventurape_androidmobile.domains.authentication.screens.states.sendReview
 
 @Composable
 fun DetailView(navController: NavController, adventure: Adventure) {
@@ -326,37 +326,3 @@ fun DetailView(navController: NavController, adventure: Adventure) {
     }
 }
 
-
-fun sendReview(review: Review, token: String, publicationId: Long, onSuccess: suspend () -> Unit) {
-    CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val response = RetrofitClient.placeholder.sendReview("Bearer $token", publicationId, review)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    onSuccess()
-                } else {
-                    println("Failed to send review: ${response.errorBody()?.string()}")
-                }
-            }
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                println("Exception occurred: ${e.message}")
-            }
-        }
-    }
-}
-
-suspend fun getComments(token: String, publicationId: Long): List<Comment> {
-    return withContext(Dispatchers.IO) {
-        try {
-            val response = RetrofitClient.placeholder.getComments("Bearer $token", publicationId)
-            if (response.isSuccessful) {
-                response.body() ?: emptyList()
-            } else {
-                emptyList()
-            }
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
-}
