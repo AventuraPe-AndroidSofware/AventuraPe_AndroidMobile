@@ -13,23 +13,23 @@ import com.example.aventurape_androidmobile.domains.authentication.screens.state
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.SignUpViewModel
 
 @Composable
-fun AdventurerNavigation(navController: NavHostController) {
+fun Navigation(navController: NavHostController) {
     val signUpViewModel: SignUpViewModel = viewModel()
     NavHost(
         navController = navController,
-        startDestination = NavScreenAdventurer.welcome_screen.name
+        startDestination = NavScreen.welcome_screen.name
     ) {
-        composable(NavScreenAdventurer.welcome_screen.name) {
+        composable(NavScreen.welcome_screen.name) {
             WelcomeScreen(navController = navController)
         }
-        composable(NavScreenAdventurer.login_screen.name) {
+        composable(NavScreen.login_screen.name) {
             val viewModel: LoginViewModel = viewModel()
             LogInScreen(viewModel = viewModel, navController = navController)
         }
-        composable(NavScreenAdventurer.select_role_screen.name){
+        composable(NavScreen.select_role_screen.name){
             SelectRoleScreen(viewModel = signUpViewModel, navController = navController)
         }
-        composable(NavScreenAdventurer.signup_screen.name){
+        composable(NavScreen.signup_screen.name){
             SignUpScreen(viewModel = signUpViewModel, navController = navController)
         }
     }

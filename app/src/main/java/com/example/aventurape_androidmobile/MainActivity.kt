@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.example.aventurape_androidmobile.navigation.AdventurerNavigation
+import com.example.aventurape_androidmobile.navigation.Navigation
 import com.example.aventurape_androidmobile.ui.theme.AventuraPe_AndroidMobileTheme
 
 class MainActivity : ComponentActivity() {
@@ -44,7 +44,7 @@ fun MainScreen(){
             modifier=Modifier.padding(padding)
                 .fillMaxSize()
         ){
-            AdventurerNavigation(navController= navController)
+            Navigation(navController= navController)
         }
     }
 }

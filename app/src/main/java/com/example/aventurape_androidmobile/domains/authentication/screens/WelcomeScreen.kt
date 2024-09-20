@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.aventurape_androidmobile.R
-import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
+import com.example.aventurape_androidmobile.navigation.NavScreen
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import kotlinx.coroutines.delay
 
@@ -25,8 +25,8 @@ fun WelcomeScreen (navController: NavHostController){
     // Navegar a la pantalla de inicio de sesión después de 3 segundos
     LaunchedEffect(Unit) {
         delay(3000) // Esperar 3 segundos
-        navController.navigate(NavScreenAdventurer.login_screen.name) {
-            popUpTo(NavScreenAdventurer.welcome_screen.name) {
+        navController.navigate(NavScreen.login_screen.name) {
+            popUpTo(NavScreen.welcome_screen.name) {
                 inclusive = true
             }
         }

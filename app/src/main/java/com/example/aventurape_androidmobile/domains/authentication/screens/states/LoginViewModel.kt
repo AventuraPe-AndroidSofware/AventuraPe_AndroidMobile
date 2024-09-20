@@ -39,4 +39,9 @@ class LoginViewModel() : ViewModel() {
             state = state.copy(loginSuccess = false, errorMessage = "Usuario o contraseña incorrectos.")
         }
     }
+
+    suspend fun getRole()
+    {
+
+    }
 }

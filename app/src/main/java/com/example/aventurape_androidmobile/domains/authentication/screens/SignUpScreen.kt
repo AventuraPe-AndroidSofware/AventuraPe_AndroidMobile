@@ -39,7 +39,7 @@ import androidx.navigation.NavHostController
 import com.example.aventurape_androidmobile.R
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.LoginViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.SignUpViewModel
-import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
+import com.example.aventurape_androidmobile.navigation.NavScreen
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import kotlinx.coroutines.launch
 
@@ -58,7 +58,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
     LaunchedEffect(state.signupSuccess) {
         if (state.signupSuccess) {
             viewModel.resetRole()
-            navController.navigate(NavScreenAdventurer.login_screen.name)
+            navController.navigate(NavScreen.login_screen.name)
         }
     }
 
@@ -164,7 +164,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
             onClick = { offset ->
                 if (offset in 23..36) {
                     viewModel.resetRole()
-                    navController.navigate(NavScreenAdventurer.login_screen.name)
+                    navController.navigate(NavScreen.login_screen.name)
                 }
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)

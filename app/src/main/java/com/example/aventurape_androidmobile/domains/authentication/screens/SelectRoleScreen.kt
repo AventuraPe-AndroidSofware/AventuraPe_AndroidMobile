@@ -19,7 +19,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.aventurape_androidmobile.R
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.SignUpViewModel
-import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
+import com.example.aventurape_androidmobile.navigation.NavScreen
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import kotlinx.coroutines.launch
 
@@ -42,7 +42,7 @@ fun SelectRoleScreen(viewModel: SignUpViewModel, navController: NavHostControlle
         Button(
             onClick = {
                 viewModel.setRole("ROLE_ADVENTUROUS")
-                navController.navigate(NavScreenAdventurer.signup_screen.name)
+                navController.navigate(NavScreen.signup_screen.name)
             }
         ) {
             Text("Aventurero", fontSize = 22.sp, fontFamily = cabinFamily, fontWeight = FontWeight.Bold)
@@ -55,7 +55,7 @@ fun SelectRoleScreen(viewModel: SignUpViewModel, navController: NavHostControlle
         Button(
             onClick = {
                 viewModel.setRole("ROLE_ADVENTUROUS")
-                navController.navigate(NavScreenAdventurer.signup_screen.name)
+                navController.navigate(NavScreen.signup_screen.name)
             }
         ) {
             Text("Empresario", fontSize = 22.sp, fontFamily = cabinFamily, fontWeight = FontWeight.Bold)

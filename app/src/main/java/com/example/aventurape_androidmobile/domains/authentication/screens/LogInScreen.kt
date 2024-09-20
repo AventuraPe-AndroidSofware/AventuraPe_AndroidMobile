@@ -38,7 +38,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.aventurape_androidmobile.R
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.LoginViewModel
-import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
+import com.example.aventurape_androidmobile.navigation.NavScreen
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import kotlinx.coroutines.launch
 
@@ -136,7 +136,7 @@ fun LogInScreen(viewModel: LoginViewModel, navController: NavHostController){
             ),
             onClick = { offset ->
                 if (offset in 31..43) {
-                    navController.navigate(NavScreenAdventurer.select_role_screen.name)
+                    navController.navigate(NavScreen.select_role_screen.name)
                 }
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)
