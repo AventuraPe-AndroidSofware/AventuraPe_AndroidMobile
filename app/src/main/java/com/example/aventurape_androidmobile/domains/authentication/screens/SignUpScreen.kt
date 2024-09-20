@@ -58,7 +58,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
     LaunchedEffect(state.signupSuccess) {
         if (state.signupSuccess) {
             viewModel.resetRole()
-            navController.navigate(NavScreenAdventurer.login_screen.name)
+            navController.navigate(NavScreenAdventurer.adventure_screen.name)
         }
     }
 
@@ -136,6 +136,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
                 if (state.password == state.confirmPassword) {
                     viewModel.viewModelScope.launch {
                         viewModel.signUpUser(state.username, state.password)
+                        navController.navigate(NavScreenAdventurer.adventure_screen.name) // Navegar a la nueva pantalla
                     }
                 } else {
                     viewModel.validatePassword(state.password, state.confirmPassword)

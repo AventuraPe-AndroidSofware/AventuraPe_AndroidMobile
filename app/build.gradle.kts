@@ -58,8 +58,10 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     //navegacion entre pantallas
-    //implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation ("androidx.navigation:navigation-compose:2.5.3")
 
+
+    implementation ("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -75,7 +77,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
     implementation(libs.androidx.hilt.navigation.compose)
     implementation("androidx.compose.material3:material3:1.3.0")
+
 }

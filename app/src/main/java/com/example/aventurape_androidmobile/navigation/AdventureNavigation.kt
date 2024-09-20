@@ -1,3 +1,4 @@
+// AdventureNavigation.kt
 package com.example.aventurape_androidmobile.navigation
 
 import androidx.compose.runtime.Composable
@@ -5,16 +6,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.aventurape_androidmobile.domains.authentication.screens.LogInScreen
-import com.example.aventurape_androidmobile.domains.authentication.screens.SelectRoleScreen
-import com.example.aventurape_androidmobile.domains.authentication.screens.SignUpScreen
-import com.example.aventurape_androidmobile.domains.authentication.screens.WelcomeScreen
+import com.example.aventurape_androidmobile.domains.authentication.screens.*
+import com.example.aventurape_androidmobile.domains.authentication.screens.states.AdventureViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.LoginViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.SignUpViewModel
 
 @Composable
 fun AdventurerNavigation(navController: NavHostController) {
     val signUpViewModel: SignUpViewModel = viewModel()
+    val adventureViewModel: AdventureViewModel = viewModel()
     NavHost(
         navController = navController,
         startDestination = NavScreenAdventurer.welcome_screen.name
@@ -32,5 +32,17 @@ fun AdventurerNavigation(navController: NavHostController) {
         composable(NavScreenAdventurer.signup_screen.name){
             SignUpScreen(viewModel = signUpViewModel, navController = navController)
         }
+        composable(NavScreenAdventurer.adventure_screen.name) {
+            AdventureScreen(viewModel = adventureViewModel, navController = navController)
+        }
+        composable("detail_adventure/{adventureId}") { backStackEntry ->
+            val adventureId = backStackEntry.arguments?.getString("adventureId")
+            val adventure = adventureViewModel.listaAdventures.find { it.Id == adventureId }
+            adventure?.let { adventureDetail ->
+                DetailView(navController = navController, adventure = adventureDetail)
+            }
+        }
     }
 }
+
+
