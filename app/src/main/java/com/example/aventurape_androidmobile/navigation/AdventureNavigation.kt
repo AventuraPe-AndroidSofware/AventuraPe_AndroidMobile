@@ -36,7 +36,7 @@ fun AdventurerNavigation(navController: NavHostController) {
             AdventureScreen(viewModel = adventureViewModel, navController = navController)
         }
         composable("detail_adventure/{adventureId}") { backStackEntry ->
-            val adventureId = backStackEntry.arguments?.getString("adventureId")
+            val adventureId = backStackEntry.arguments?.getString("adventureId")?.toLongOrNull()
             val adventure = adventureViewModel.listaAdventures.find { it.Id == adventureId }
             adventure?.let { adventureDetail ->
                 DetailView(navController = navController, adventure = adventureDetail)
@@ -44,5 +44,3 @@ fun AdventurerNavigation(navController: NavHostController) {
         }
     }
 }
-
-

@@ -1,6 +1,8 @@
 package com.example.aventurape_androidmobile.utils.interfaces
 
 import com.example.aventurape_androidmobile.Beans.Adventure
+import com.example.aventurape_androidmobile.Beans.Comment
+import com.example.aventurape_androidmobile.Beans.Review
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignIn
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignUp
 import com.example.aventurape_androidmobile.utils.models.UserResponse
@@ -9,6 +11,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface Placeholder {
     @POST("authentication/sign-up")
@@ -21,4 +24,18 @@ interface Placeholder {
     suspend fun getAllAdventures(
         @Header("Authorization") token: String
     ): Response<List<Adventure>>
+
+    @POST("publication/{publicationId}/add-comment")
+    suspend fun sendReview(
+        @Header("Authorization") token: String,
+        @Path("publicationId") publicationId: Long,
+        @Body review: Review
+    ): Response<Void>
+
+    @GET("publication/{publicationId}/comments")
+    suspend fun getComments(
+        @Header("Authorization") token: String,
+        @Path("publicationId") publicationId: Long
+    ): Response<List<Comment>>
+
 }
