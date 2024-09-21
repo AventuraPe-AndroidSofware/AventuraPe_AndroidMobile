@@ -20,19 +20,4 @@ object RetrofitClient {
         .build()
     val placeholder: Placeholder = retrofit.create(Placeholder::class.java)
 
-    // Agregar el interceptor para la autenticación con token
-    fun create(token: String): Placeholder {
-        val authInterceptor = AuthInterceptor(token)
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(authInterceptor)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)  // Incluye el cliente con el interceptor
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        return retrofit.create(Placeholder::class.java)
-    }
 }

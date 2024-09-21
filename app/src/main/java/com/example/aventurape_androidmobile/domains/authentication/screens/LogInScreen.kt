@@ -1,3 +1,4 @@
+// LogInScreen.kt
 package com.example.aventurape_androidmobile.domains.authentication.screens
 
 import androidx.compose.foundation.Image
@@ -109,10 +110,10 @@ fun LogInScreen(viewModel: LoginViewModel, navController: NavHostController){
             onClick = {
                 viewModel.viewModelScope.launch {
                     viewModel.signInUser(state.username, state.password)
+                    if (state.loginSuccess) {
+                        navController.navigate(NavScreenAdventurer.adventure_screen.name)
+                    }
                 }
-                //if (state.loginSuccess) {
-                    //navController.navigate(AppScreens.LoginScreen.route)
-                //}
             }
         ) {
             Text("Login", fontSize = 22.sp, fontFamily = cabinFamily, fontWeight = FontWeight.Bold)
