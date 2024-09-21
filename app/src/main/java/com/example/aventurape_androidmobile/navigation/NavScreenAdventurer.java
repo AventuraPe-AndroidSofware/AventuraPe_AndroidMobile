@@ -6,5 +6,6 @@ public enum NavScreenAdventurer {
     select_role_screen,
     signup_screen,
     adventure_screen,
-    detail_adventure
+    detail_adventure,
+    adventure_publication_management
 }

@@ -149,7 +149,7 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
                             cost = costo.toInt()
                         )
 
-                        val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJwYXJrZXIiLCJpYXQiOjE3MjY4NjQ1NTMsImV4cCI6MTcyNzQ2OTM1M30.q8b6nL-mg5iORBrssoLFAOEvVTqrTfpLkon-9bUgM7gGCwbzPIuTpxVf_bheN311" // Replace with a method to get the token dynamically
+                        val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtaW5pIiwiaWF0IjoxNzI2ODc5NTk4LCJleHAiOjE3Mjc0ODQzOTh9.4wVqxFWPsjoHyPpiktdzz7BXnEsZZrbGmtFyfHCPRI3fzJh6FUHrRnm1T8gCSuVQ" // Replace with a method to get the token dynamically
                         viewModel.sendPublication(publicationRequest, token, entrepreneurId) {
                             CoroutineScope(Dispatchers.Main).launch {
                                 snackbarHostState.showSnackbar("Actividad creada correctamente")

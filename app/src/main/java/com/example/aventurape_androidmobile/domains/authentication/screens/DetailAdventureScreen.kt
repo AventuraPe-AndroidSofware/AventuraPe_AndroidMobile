@@ -52,7 +52,7 @@ fun DetailView(navController: NavController, adventure: Adventure) {
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MjY4NjQ2MTYsImV4cCI6MTcyNzQ2OTQxNn0._Ek2Q2Od63eiHGM8x76sWUT_n6bTD58ibi5x3XyOWWeb7AVLhZ-Mq5LraMp58afj"
+        val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtaW5pIiwiaWF0IjoxNzI2ODc5NTk4LCJleHAiOjE3Mjc0ODQzOTh9.4wVqxFWPsjoHyPpiktdzz7BXnEsZZrbGmtFyfHCPRI3fzJh6FUHrRnm1T8gCSuVQ"
         comments.value = getComments(token, adventure.Id)
     }
 

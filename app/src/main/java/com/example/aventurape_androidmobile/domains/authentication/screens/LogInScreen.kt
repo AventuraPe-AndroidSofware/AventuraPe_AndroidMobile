@@ -111,7 +111,7 @@ fun LogInScreen(viewModel: LoginViewModel, navController: NavHostController){
                 viewModel.viewModelScope.launch {
                     viewModel.signInUser(state.username, state.password)
                     if (state.loginSuccess) {
-                        navController.navigate(NavScreenAdventurer.adventure_screen.name)
+                        navController.navigate(NavScreenAdventurer.adventure_publication_management.name)
                     }
                 }
             }
