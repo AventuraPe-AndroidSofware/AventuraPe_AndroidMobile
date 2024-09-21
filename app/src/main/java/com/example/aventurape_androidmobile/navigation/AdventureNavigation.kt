@@ -1,5 +1,6 @@
 package com.example.aventurape_androidmobile.navigation
 
+import AccountInformationA
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -11,6 +12,11 @@ import com.example.aventurape_androidmobile.domains.authentication.screens.SignU
 import com.example.aventurape_androidmobile.domains.authentication.screens.WelcomeScreen
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.LoginViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.SignUpViewModel
+import com.example.aventurape_androidmobile.userProfileManagement.screens.AccountAdventurer
+import com.example.aventurape_androidmobile.userProfileManagement.screens.AccountInformationE
+import com.example.aventurape_androidmobile.userProfileManagement.screens.BestAdventures
+import com.example.aventurape_androidmobile.userProfileManagement.screens.states.ProfileViewModelA
+import com.example.aventurape_androidmobile.userProfileManagement.screens.states.ProfileViewModelE
 
 @Composable
 fun AdventurerNavigation(navController: NavHostController) {
@@ -31,6 +37,26 @@ fun AdventurerNavigation(navController: NavHostController) {
         }
         composable(NavScreenAdventurer.signup_screen.name){
             SignUpScreen(viewModel = signUpViewModel, navController = navController)
+        }
+        composable(NavScreenAdventurer.HomeScreenA.name) {
+            //HomeScreenAdventurer()
+        }
+        composable(NavScreenAdventurer.SearchA.name) {
+            //SearchAdventurer()
+        }
+        composable(NavScreenAdventurer.AccountA.name) {
+            AccountAdventurer(navController)
+        }
+        composable(NavScreenAdventurer.BestAdventuresA.name ) {
+            BestAdventures()
+        }
+        composable(NavScreenAdventurer.AccountInformationA.name) {
+            val viewModelA: ProfileViewModelA = viewModel()
+            AccountInformationA(viewModelA = viewModelA)
+        }
+        composable(NavScreenAdventurer.AccountInformationE.name) {
+            val viewModelE: ProfileViewModelE = viewModel()
+            AccountInformationE(viewModelE = viewModelE)
         }
     }
 }

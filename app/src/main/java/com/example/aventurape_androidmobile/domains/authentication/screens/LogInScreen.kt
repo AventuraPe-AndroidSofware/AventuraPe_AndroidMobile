@@ -110,9 +110,9 @@ fun LogInScreen(viewModel: LoginViewModel, navController: NavHostController){
                 viewModel.viewModelScope.launch {
                     viewModel.signInUser(state.username, state.password)
                 }
-                //if (state.loginSuccess) {
-                    //navController.navigate(AppScreens.LoginScreen.route)
-                //}
+                if (state.loginSuccess) {
+                    navController.navigate(NavScreenAdventurer.AccountA.name)
+                }
             }
         ) {
             Text("Login", fontSize = 22.sp, fontFamily = cabinFamily, fontWeight = FontWeight.Bold)
