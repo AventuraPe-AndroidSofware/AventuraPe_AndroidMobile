@@ -19,7 +19,8 @@ class AdventureViewModel : ViewModel() {
 
    fun getAdventures(token: String) {
     viewModelScope.launch(Dispatchers.IO) {
-        val response = RetrofitClient.placeholder.getAllAdventures("Bearer $token")
+        val response = RetrofitClient.placeholder
+            .getAllAdventures("Bearer $token")
         withContext(Dispatchers.Main) {
             if (response.body() != null) {
                 listaAdventures = response.body() as ArrayList<Adventure>
