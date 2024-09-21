@@ -300,7 +300,7 @@ fun DetailView(navController: NavController, adventure: Adventure) {
                     modifier = Modifier.weight(1f).padding(start = 8.dp)
                 ) {
                     Text(
-                        text = "Id: ${comment.id}",
+                        text = "User: ${comment.id}", // Mostrar el username
                         fontSize = 16.sp,
                         fontFamily = cabinFamily,
                         color = Color.Black
@@ -318,7 +318,6 @@ fun DetailView(navController: NavController, adventure: Adventure) {
                         color = Color.Black
                     )
                 }
-
             }
             Spacer(modifier = Modifier.height(15.dp))
         }
