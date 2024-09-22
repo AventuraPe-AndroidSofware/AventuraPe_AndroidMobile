@@ -1,12 +1,13 @@
 package com.example.aventurape_androidmobile.Beans
 
 data class Adventure(
-    val Id: String,
+    val id: Long,
+    val entrepreneurId: Long,
     val nameActivity: String,
     val description: String,
-    val timeDuration: String,
+    val timeDuration: Long,
     val cantPeople: Int,
-    val cost: Int,
+    val cost: Float,
     val image: String
 
 )
