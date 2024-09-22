@@ -82,7 +82,7 @@ fun AdventureCard(adventure: Adventure, navController: NavController) {
         .fillMaxWidth()
         .padding(vertical = 8.dp)
         .clickable {
-            navController.navigate("detail_adventure/${adventure.Id}")
+            navController.navigate("detail_adventure/${adventure.id}")
         },
         elevation = CardDefaults.cardElevation(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF0CCAA)),

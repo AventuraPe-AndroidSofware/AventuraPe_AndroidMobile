@@ -109,6 +109,8 @@ fun LogInScreen(viewModel: LoginViewModel, navController: NavHostController){
             onClick = {
                 viewModel.viewModelScope.launch {
                     viewModel.signInUser(state.username, state.password)
+                    if (viewModel.state.loginSuccess)
+                        navController.navigate(NavScreenAdventurer.adventurer_home_screen.name)
                 }
                 //if (state.loginSuccess) {
                     //navController.navigate(AppScreens.LoginScreen.route)
