@@ -37,7 +37,7 @@ fun AccountInformationE(viewModelE: ProfileViewModelE) {
     val navController = rememberNavController()
     val state = viewModelE.state
     val scrollState = rememberScrollState()
-
+    val token="eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJob2xhIiwiaWF0IjoxNzI2OTU5NzAwLCJleHAiOjE3Mjc1NjQ1MDB9.Cow3sXgCJVcJ7Bho27rFPU6_XQkKMqeyZ3hTiIPO9eb_5g4qShnZKNeWakdBOLM6"
     LaunchedEffect(viewModelE.state.profileECompletedSucces) {
         if (viewModelE.state.profileECompletedSucces) {
             viewModelE.resetState()
@@ -67,7 +67,8 @@ fun AccountInformationE(viewModelE: ProfileViewModelE) {
                                 state.city,
                                 state.postalCode,
                                 state.country,
-                                state.name
+                                state.name,
+                                token
                             )
                         }
                     },

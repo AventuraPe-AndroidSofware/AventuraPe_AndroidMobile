@@ -21,9 +21,9 @@ class ProfileViewModelE(): ViewModel() {
     fun resetState(){
         state= ProfileStateE()
     }
-    suspend fun completeProfileE(email: String, street: String, number: String, city: String, postalCode: String, country: String, name: String){
+    suspend fun completeProfileE(email: String, street: String, number: String, city: String, postalCode: String, country: String, name: String, token:String){
         val requestE= UserRequestProfileE(email=email, street=street, number=number, city=city, postalCode=postalCode, country=country, name=name)
-        val responseE= RetrofitClient.placeholder.saveProfileE(requestE)
+        val responseE= RetrofitClient.placeholder.saveProfileE(requestE, token)
         if(responseE.isSuccessful && responseE.body()!=null){
             val profileResponse= responseE.body()!!
             val profileACompleted= ProfileE(

@@ -52,7 +52,7 @@ fun AdventurerNavigation(navController: NavHostController) {
         }
         composable(NavScreenAdventurer.AccountInformationA.name) {
             val viewModelA: ProfileViewModelA = viewModel()
-            AccountInformationA(viewModelA = viewModelA)
+            AccountInformationA(viewModelA = viewModelA, navController = navController)
         }
         composable(NavScreenAdventurer.AccountInformationE.name) {
             val viewModelE: ProfileViewModelE = viewModel()
