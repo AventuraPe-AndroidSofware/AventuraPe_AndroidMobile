@@ -44,7 +44,6 @@ interface Placeholder {
     @POST("publication/create-publication")
     suspend fun sendPublication(
         @Header("Authorization") token: String,
-        @Path("entrepreneurId") entrepreneurId: Long,
         @Body publication: PublicationRequest
     ): Response<Void>
 

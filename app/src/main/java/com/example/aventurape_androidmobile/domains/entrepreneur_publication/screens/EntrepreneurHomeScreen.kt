@@ -148,8 +148,7 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
                             cantPeople = cantidadPersonas.toInt(),
                             cost = costo.toInt()
                         )
-
-                        val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtaW5pIiwiaWF0IjoxNzI2ODc5NTk4LCJleHAiOjE3Mjc0ODQzOTh9.4wVqxFWPsjoHyPpiktdzz7BXnEsZZrbGmtFyfHCPRI3fzJh6FUHrRnm1T8gCSuVQ" // Replace with a method to get the token dynamically
+                        val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJob2xhIiwiaWF0IjoxNzI2ODgxNjMxLCJleHAiOjE3Mjc0ODY0MzF9.yZNIfIOh7sTkO7loVPSOc2Od8uzLC1QzM0q8phUcO5N7CukljJ_yOAAH_wywAaS3" // Replace with a method to get the token dynamically
                         viewModel.sendPublication(publicationRequest, token, entrepreneurId) {
                             CoroutineScope(Dispatchers.Main).launch {
                                 snackbarHostState.showSnackbar("Actividad creada correctamente")
@@ -272,13 +271,11 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
 
 @Composable
 fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long) {
-    var publications by remember { mutableStateOf<List<PublicationResponse>>(emptyList()) }
-
-    val context = LocalContext.current
+    val publications by viewModel.publications
 
     LaunchedEffect(Unit) {
-        val token = "your_token_here"
-        publications = viewModel.getPublications(token, entrepreneurId)
+        val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJob2xhIiwiaWF0IjoxNzI2ODgxNjMxLCJleHAiOjE3Mjc0ODY0MzF9.yZNIfIOh7sTkO7loVPSOc2Od8uzLC1QzM0q8phUcO5N7CukljJ_yOAAH_wywAaS3" // Replace with a method to get the token dynamically
+        viewModel.getPublications(token, entrepreneurId)
     }
 
     publications.forEach { publication ->
@@ -292,7 +289,7 @@ fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long) {
         ) {
             Column {
                 Image(
-                    painter = painterResource(id = R.drawable.aventurapelogo),
+                    painter = painterResource(id = R.drawable.aventurapelogo), //aca modificar
                     contentDescription = "Logo AventuraPe",
                     modifier = Modifier
                         .size(width = 150.dp, height = 100.dp)

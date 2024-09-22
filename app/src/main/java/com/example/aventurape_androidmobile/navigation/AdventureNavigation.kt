@@ -44,7 +44,7 @@ fun AdventurerNavigation(navController: NavHostController) {
             }
         }
         composable(NavScreenAdventurer.adventure_publication_management.name){
-            AppPublicationManagement(navController = navController, entrepreneurId = 1)
+            AppPublicationManagement(navController = navController, entrepreneurId = 5)
         }
     }
 }
