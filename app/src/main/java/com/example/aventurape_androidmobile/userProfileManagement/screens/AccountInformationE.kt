@@ -1,5 +1,6 @@
 package com.example.aventurape_androidmobile.userProfileManagement.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,26 +26,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import com.example.aventurape_androidmobile.userProfileManagement.screens.states.ProfileViewModelE
 import kotlinx.coroutines.launch
 
-
 @Composable
-fun AccountInformationE(viewModelE: ProfileViewModelE) {
-    val navController = rememberNavController()
+fun AccountInformationE(navController: NavController, viewModelE: ProfileViewModelE) {
     val state = viewModelE.state
     val scrollState = rememberScrollState()
-    val token="eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJob2xhIiwiaWF0IjoxNzI2OTU5NzAwLCJleHAiOjE3Mjc1NjQ1MDB9.Cow3sXgCJVcJ7Bho27rFPU6_XQkKMqeyZ3hTiIPO9eb_5g4qShnZKNeWakdBOLM6"
+    val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJob2xhIiwiaWF0IjoxNzI2OTU5NzAwLCJleHAiOjE3Mjc1NjQ1MDB9.Cow3sXgCJVcJ7Bho27rFPU6_XQkKMqeyZ3hTiIPO9eb_5g4qShnZKNeWakdBOLM6"
+
     LaunchedEffect(viewModelE.state.profileECompletedSucces) {
         if (viewModelE.state.profileECompletedSucces) {
             viewModelE.resetState()
             navController.navigate(NavScreenAdventurer.AccountE.name)
         }
     }
-
     Box(modifier = Modifier.verticalScroll(scrollState)) {
         Column(
             modifier = Modifier
@@ -59,17 +59,23 @@ fun AccountInformationE(viewModelE: ProfileViewModelE) {
             ) {
                 Button(
                     onClick = {
+                        Log.d("AccountInformationE", "Save button clicked")
                         viewModelE.viewModelScope.launch {
-                            viewModelE.completeProfileE(
-                                state.email,
-                                state.street,
-                                state.number,
-                                state.city,
-                                state.postalCode,
-                                state.country,
-                                state.name,
-                                token
-                            )
+                            try {
+                                viewModelE.completeProfileE(
+                                    state.email,
+                                    state.street,
+                                    state.number,
+                                    state.city,
+                                    state.postalCode,
+                                    state.country,
+                                    state.name,
+                                    token
+                                )
+                                Log.d("AccountInformationE", "Profile completed successfully")
+                            } catch (e: Exception) {
+                                Log.e("AccountInformationE", "Error completing profile", e)
+                            }
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -84,7 +90,6 @@ fun AccountInformationE(viewModelE: ProfileViewModelE) {
                     )
                 }
             }
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -266,7 +271,7 @@ fun AccountInformationE(viewModelE: ProfileViewModelE) {
                         viewModelE.inputProfileData(
                             email = state.email,
                             street = state.street,
-                            it,
+                            number = state.number,
                             city = state.city,
                             postalCode = state.postalCode,
                             it,
@@ -294,12 +299,12 @@ fun AccountInformationE(viewModelE: ProfileViewModelE) {
                     color = Color(0xBC765532), fontSize = 17.sp
                 )
                 OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-                    value = state.number,
+                    value = state.name,
                     onValueChange = {
                         viewModelE.inputProfileData(
                             email = state.email,
                             street = state.street,
-                            it,
+                            number = state.number,
                             city = state.city,
                             postalCode = state.postalCode,
                             country = state.country,

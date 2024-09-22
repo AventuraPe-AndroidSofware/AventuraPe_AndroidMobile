@@ -20,8 +20,10 @@ interface Placeholder {
     suspend fun singIn(@Body request: UserRequestSignIn):Response<UserResponse>
 
     @POST("profiles/adventurer")
-    suspend fun saveProfileA(@Body request: UserRequestProfileA, @Header("Authorization")token:String):Response<UserResponseProfileA>
+    suspend fun saveProfileA(@Body request: UserRequestProfileA,
+                             @Header("Authorization")token:String):Response<UserResponseProfileA>
 
     @POST("profiles/entrepreneur")
-    suspend fun saveProfileE(@Body request: UserRequestProfileE,@Header("Authorization") token: String):Response<UserResponseProfileE>
+    suspend fun saveProfileE(@Body request: UserRequestProfileE,
+                             @Header("Authorization") token: String):Response<UserResponseProfileE>
 }

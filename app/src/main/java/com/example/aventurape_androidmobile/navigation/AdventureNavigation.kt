@@ -13,6 +13,7 @@ import com.example.aventurape_androidmobile.domains.authentication.screens.Welco
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.LoginViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.SignUpViewModel
 import com.example.aventurape_androidmobile.userProfileManagement.screens.AccountAdventurer
+import com.example.aventurape_androidmobile.userProfileManagement.screens.AccountEntrepreneur
 import com.example.aventurape_androidmobile.userProfileManagement.screens.AccountInformationE
 import com.example.aventurape_androidmobile.userProfileManagement.screens.BestAdventures
 import com.example.aventurape_androidmobile.userProfileManagement.screens.states.ProfileViewModelA
@@ -54,9 +55,12 @@ fun AdventurerNavigation(navController: NavHostController) {
             val viewModelA: ProfileViewModelA = viewModel()
             AccountInformationA(viewModelA = viewModelA, navController = navController)
         }
+        composable(NavScreenAdventurer.AccountE.name) {
+            AccountEntrepreneur(navController)
+        }
         composable(NavScreenAdventurer.AccountInformationE.name) {
             val viewModelE: ProfileViewModelE = viewModel()
-            AccountInformationE(viewModelE = viewModelE)
+            AccountInformationE(navController = navController, viewModelE = viewModelE)
         }
     }
 }

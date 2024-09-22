@@ -66,7 +66,7 @@ fun AccountEntrepreneur(navController:NavController){
         // Personal Information
         ProfileMenuItem(
             icon = Icons.Default.Person,
-            title = "Información personal",
+            title = "Información de la empresa",
             tint = Color.Black,
             onClick = {
                 navController.navigate(NavScreenAdventurer.AccountInformationE.name)
