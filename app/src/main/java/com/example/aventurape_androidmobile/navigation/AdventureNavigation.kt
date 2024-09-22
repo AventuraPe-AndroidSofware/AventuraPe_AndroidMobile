@@ -6,6 +6,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.aventurape_androidmobile.domains.adventurer.screens.AdventurerHomeScreen
+import com.example.aventurape_androidmobile.domains.adventurer.screens.states.AdventurerHomeViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.*
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.AdventureViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.LoginViewModel
@@ -37,10 +39,14 @@ fun AdventurerNavigation(navController: NavHostController) {
         }
         composable("detail_adventure/{adventureId}") { backStackEntry ->
             val adventureId = backStackEntry.arguments?.getString("adventureId")
-            val adventure = adventureViewModel.listaAdventures.find { it.Id == adventureId }
+            val adventure = adventureViewModel.listaAdventures.find { it.id.toString() == adventureId }
             adventure?.let { adventureDetail ->
                 DetailView(navController = navController, adventure = adventureDetail)
             }
+        }
+        composable(NavScreenAdventurer.adventurer_home_screen.name){
+            val viewModel: AdventurerHomeViewModel = viewModel()
+            AdventurerHomeScreen(viewModel,navController = navController)
         }
     }
 }

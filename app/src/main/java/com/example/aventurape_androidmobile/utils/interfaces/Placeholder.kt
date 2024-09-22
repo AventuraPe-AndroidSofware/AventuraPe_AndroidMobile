@@ -18,7 +18,7 @@ interface Placeholder {
     suspend fun singIn(@Body request: UserRequestSignIn): Response<UserResponse>
 
     @GET("publication/all-publications")
-    suspend fun getAllAdventures(
-        @Header("Authorization") token: String
-    ): Response<List<Adventure>>
+    suspend fun getAllAdventures(): Response<List<Adventure>>
+
+
 }
