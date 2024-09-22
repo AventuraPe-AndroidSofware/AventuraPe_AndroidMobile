@@ -14,7 +14,7 @@ class LoginViewModel() : ViewModel() {
     var state by mutableStateOf(LoginState())
         private set
 
-    var userLogged: UserLogged = UserLogged()
+    private var userLogged: UserLogged = UserLogged()
 
     fun inputCredentials(username: String, password: String) {
         state = state.copy(username = username, password = password)
@@ -29,12 +29,13 @@ class LoginViewModel() : ViewModel() {
         val response = RetrofitClient.placeholder.singIn(request)
         if (response.isSuccessful && response.body() != null) {
             val userResponse = response.body()!!
-            val userLogged = UserLogged(
+            userLogged = UserLogged(
                 id = userResponse.id,
                 username = userResponse.username,
                 token = userResponse.token
             )
             state = state.copy(loginSuccess = true, userLogged = userLogged, errorMessage = null)
+            RetrofitClient.setToken(userLogged.token)
         } else {
             state = state.copy(loginSuccess = false, errorMessage = "Usuario o contraseña incorrectos.")
         }
