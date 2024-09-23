@@ -52,8 +52,7 @@ fun DetailView(navController: NavController, adventure: Adventure) {
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MjY4NjQ2MTYsImV4cCI6MTcyNzQ2OTQxNn0._Ek2Q2Od63eiHGM8x76sWUT_n6bTD58ibi5x3XyOWWeb7AVLhZ-Mq5LraMp58afj"
-        comments.value = getComments(token, adventure.Id)
+        comments.value = getComments(adventure.Id)
     }
 
     Column(
@@ -242,9 +241,8 @@ fun DetailView(navController: NavController, adventure: Adventure) {
                     content = comment.text,
                     rating = rating * 2
                 )
-                val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MjY4NjQ2MTYsImV4cCI6MTcyNzQ2OTQxNn0._Ek2Q2Od63eiHGM8x76sWUT_n6bTD58ibi5x3XyOWWeb7AVLhZ-Mq5LraMp58afj"
-                sendReview(review, token, adventure.Id) {
-                    comments.value = getComments(token, adventure.Id)
+                sendReview(review, adventure.Id) {
+                    comments.value = getComments(adventure.Id)
                 }
                 CoroutineScope(Dispatchers.Main).launch {
                     snackbarHostState.showSnackbar("Review sent successfully")

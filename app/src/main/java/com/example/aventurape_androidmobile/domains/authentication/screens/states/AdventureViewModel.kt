@@ -10,16 +10,14 @@ import com.example.aventurape_androidmobile.utils.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 
 class AdventureViewModel : ViewModel() {
 
     var listaAdventures: ArrayList<Adventure> by mutableStateOf(arrayListOf())
 
-   fun getAdventures(token: String) {
+   fun getAdventures() {
     viewModelScope.launch(Dispatchers.IO) {
-        val response = RetrofitClient.placeholder.getAllAdventures("Bearer $token")
+        val response = RetrofitClient.placeholder.getAllAdventures()
         withContext(Dispatchers.Main) {
             if (response.body() != null) {
                 listaAdventures = response.body() as ArrayList<Adventure>

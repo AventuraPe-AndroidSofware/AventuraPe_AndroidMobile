@@ -1,7 +1,6 @@
 package com.example.aventurape_androidmobile.utils
 
 
-import com.example.aventurape_androidmobile.domains.authentication.models.AuthInterceptor
 import com.example.aventurape_androidmobile.utils.interfaces.Placeholder
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -11,13 +10,29 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 object RetrofitClient {
-    //aqui coloquen la url base de su api
-    private const val BASE_URL = "http://10.0.2.2:8090/api/v1/"
-    private val gson: Gson = GsonBuilder().create()
+
+    // Variable que contiene el token
+    private var token: String? = null
+
+    // Método para actualizar el token
+    fun updateToken(newToken: String) {
+        token = newToken
+    }
+
+    private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
+
+    // Cliente OkHttp que usa el TokenInterceptor
+    private val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(TokenInterceptor { token }) // Interceptor para agregar el token
+        .build()
+
+    private val gson = GsonBuilder().create()
+
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
+        .client(okHttpClient) // Asigna el cliente OkHttp modificado
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
-    val placeholder: Placeholder = retrofit.create(Placeholder::class.java)
 
+    val placeholder: Placeholder = retrofit.create(Placeholder::class.java)
 }

@@ -34,6 +34,9 @@ class LoginViewModel() : ViewModel() {
                 username = userResponse.username,
                 token = userResponse.token
             )
+            // Actualizar el token en el RetrofitClient
+            userLogged.token?.let { RetrofitClient.updateToken(it) }
+
             state = state.copy(loginSuccess = true, userLogged = userLogged, errorMessage = null)
         } else {
             state = state.copy(loginSuccess = false, errorMessage = "Usuario o contraseña incorrectos.")

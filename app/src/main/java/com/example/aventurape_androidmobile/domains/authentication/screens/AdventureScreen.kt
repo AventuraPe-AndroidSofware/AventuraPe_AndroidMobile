@@ -30,8 +30,7 @@ fun AdventureScreen(viewModel: AdventureViewModel, navController: NavController)
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
     LaunchedEffect(Unit) {
-        val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MjY4NjQ2MTYsImV4cCI6MTcyNzQ2OTQxNn0._Ek2Q2Od63eiHGM8x76sWUT_n6bTD58ibi5x3XyOWWeb7AVLhZ-Mq5LraMp58afj"
-        viewModel.getAdventures(token)
+        viewModel.getAdventures()
     }
 
     Column(modifier = Modifier

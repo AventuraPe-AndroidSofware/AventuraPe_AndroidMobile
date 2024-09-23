@@ -21,20 +21,16 @@ interface Placeholder {
     suspend fun singIn(@Body request: UserRequestSignIn): Response<UserResponse>
 
     @GET("publication/all-publications")
-    suspend fun getAllAdventures(
-        @Header("Authorization") token: String
-    ): Response<List<Adventure>>
+    suspend fun getAllAdventures(): Response<List<Adventure>>
 
     @POST("publication/{publicationId}/add-comment")
     suspend fun sendReview(
-        @Header("Authorization") token: String,
         @Path("publicationId") publicationId: Long,
         @Body review: Review
     ): Response<Void>
 
     @GET("publication/{publicationId}/comments")
     suspend fun getComments(
-        @Header("Authorization") token: String,
         @Path("publicationId") publicationId: Long
     ): Response<List<Comment>>
 

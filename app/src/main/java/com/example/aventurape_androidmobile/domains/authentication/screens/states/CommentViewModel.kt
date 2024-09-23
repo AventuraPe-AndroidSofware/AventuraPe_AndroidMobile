@@ -5,10 +5,10 @@ import com.example.aventurape_androidmobile.utils.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-suspend fun getComments(token: String, publicationId: Long): List<Comment> {
+suspend fun getComments(publicationId: Long): List<Comment> {
     return withContext(Dispatchers.IO) {
         try {
-            val response = RetrofitClient.placeholder.getComments("Bearer $token", publicationId)
+            val response = RetrofitClient.placeholder.getComments(publicationId)
             if (response.isSuccessful) {
                 response.body() ?: emptyList()
             } else {
