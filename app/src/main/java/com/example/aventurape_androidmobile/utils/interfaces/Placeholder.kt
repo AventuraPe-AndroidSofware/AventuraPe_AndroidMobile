@@ -8,6 +8,7 @@ import com.example.aventurape_androidmobile.Beans.Review
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignIn
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignUp
 import com.example.aventurape_androidmobile.utils.models.UserResponse
+import com.example.aventurape_androidmobile.utils.models.UserRolesResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -49,4 +50,8 @@ interface Placeholder {
         @Path("entrepreneurId") entrepreneurId: Long
     ): Response<List<PublicationResponse>>
 
+    @GET("users/{userId}")
+    suspend fun getUserById(
+        @Path("userId") userId: Long
+    ): Response<UserRolesResponse>
 }

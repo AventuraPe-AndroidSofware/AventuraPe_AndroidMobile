@@ -7,5 +7,6 @@ public enum NavScreenAdventurer {
     signup_screen,
     adventure_screen,
     detail_adventure,
-    adventure_publication_management
+    adventure_publication_management,
+    error_screen
 }

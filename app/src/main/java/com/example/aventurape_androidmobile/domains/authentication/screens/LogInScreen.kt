@@ -1,6 +1,9 @@
 // LogInScreen.kt
 package com.example.aventurape_androidmobile.domains.authentication.screens
 
+import PreferenceManager
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +25,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -40,13 +44,14 @@ import androidx.navigation.NavHostController
 import com.example.aventurape_androidmobile.R
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.LoginViewModel
 import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
+import com.example.aventurape_androidmobile.navigation.Roles
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalUnitApi::class)
 @Composable
 fun LogInScreen(viewModel: LoginViewModel, navController: NavHostController){
-
+    val context = LocalContext.current.applicationContext
     val state = viewModel.state
 
     // Mejora de la interfaz de usuario (Salto de campos) Experimental
@@ -109,9 +114,26 @@ fun LogInScreen(viewModel: LoginViewModel, navController: NavHostController){
         Button(
             onClick = {
                 viewModel.viewModelScope.launch {
-                    viewModel.signInUser(state.username, state.password)
+                    viewModel.signInUser(context, state.username, state.password)
                     if (state.loginSuccess) {
-                        navController.navigate(NavScreenAdventurer.adventure_publication_management.name)
+                        // Obtener el rol del usuario desde el ViewModel o directamente desde PreferenceManager
+                        val userRole = PreferenceManager.getUserRoles(context)
+                        Log.d("Roles", "User roles: $userRole")
+                        Log.d("SharedPreferences", PreferenceManager.getAllPreferences(context).toString())
+
+                        // Navegar según el rol
+                        when {
+                            userRole != null && userRole.contains(Roles.ROLE_ADVENTUROUS.name) -> {
+                                navController.navigate(NavScreenAdventurer.adventure_screen.name)
+                            }
+                            userRole != null && userRole.contains(Roles.ROLE_ENTREPRENEUR.name) -> {
+                                navController.navigate(NavScreenAdventurer.adventure_publication_management.name)
+                            }
+                            else -> {
+                                navController.navigate(NavScreenAdventurer.error_screen.name)
+                            }
+                        }
+
                     }
                 }
             }

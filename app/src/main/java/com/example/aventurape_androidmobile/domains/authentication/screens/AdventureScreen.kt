@@ -1,5 +1,6 @@
 package com.example.aventurape_androidmobile.domains.authentication.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -77,6 +78,7 @@ fun AdventureScreen(viewModel: AdventureViewModel, navController: NavController)
 
 @Composable
 fun AdventureCard(adventure: Adventure, navController: NavController) {
+    Log.d("Adventure ID clicked:"," ${adventure.Id}") // Agrega esta línea
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(vertical = 8.dp)

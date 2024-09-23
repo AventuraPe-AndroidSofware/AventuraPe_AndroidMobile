@@ -19,6 +19,11 @@ object RetrofitClient {
         token = newToken
     }
 
+    //Metodo para obtener el token
+    fun  getToken(): String? {
+        return this.token;
+    }
+
     private const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
 
     // Cliente OkHttp que usa el TokenInterceptor
