@@ -10,6 +10,8 @@ import com.example.aventurape_androidmobile.utils.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 
 class AdventureViewModel : ViewModel() {
 

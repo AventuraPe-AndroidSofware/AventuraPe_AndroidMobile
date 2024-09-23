@@ -10,6 +10,7 @@ import com.example.aventurape_androidmobile.domains.authentication.screens.*
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.AdventureViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.LoginViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.states.SignUpViewModel
+import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AppPublicationManagement
 
 @Composable
 fun AdventurerNavigation(navController: NavHostController) {
@@ -36,11 +37,16 @@ fun AdventurerNavigation(navController: NavHostController) {
             AdventureScreen(viewModel = adventureViewModel, navController = navController)
         }
         composable("detail_adventure/{adventureId}") { backStackEntry ->
-            val adventureId = backStackEntry.arguments?.getString("adventureId")?.toLongOrNull()
+            val adventureId = backStackEntry.arguments?.getLong("adventureId")
             val adventure = adventureViewModel.listaAdventures.find { it.Id == adventureId }
             adventure?.let { adventureDetail ->
                 DetailView(navController = navController, adventure = adventureDetail)
             }
         }
+        composable(NavScreenAdventurer.adventure_publication_management.name){
+            AppPublicationManagement(navController = navController, entrepreneurId = 5)
+        }
     }
 }
+
+

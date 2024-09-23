@@ -1,6 +1,8 @@
 package com.example.aventurape_androidmobile.utils.interfaces
 
 import com.example.aventurape_androidmobile.Beans.Adventure
+import com.example.aventurape_androidmobile.utils.models.PublicationRequest
+import com.example.aventurape_androidmobile.utils.models.PublicationResponse
 import com.example.aventurape_androidmobile.Beans.Comment
 import com.example.aventurape_androidmobile.Beans.Review
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignIn
@@ -33,5 +35,18 @@ interface Placeholder {
     suspend fun getComments(
         @Path("publicationId") publicationId: Long
     ): Response<List<Comment>>
+
+
+    @POST("publication/create-publication")
+    suspend fun sendPublication(
+        @Header("Authorization") token: String,
+        @Body publication: PublicationRequest
+    ): Response<Void>
+
+    @GET("publication/{entrepreneurId}/publications")
+    suspend fun getPublications(
+        @Header("Authorization") token: String,
+        @Path("entrepreneurId") entrepreneurId: Long
+    ): Response<List<PublicationResponse>>
 
 }
