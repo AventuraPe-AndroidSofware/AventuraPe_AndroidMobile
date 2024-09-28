@@ -149,8 +149,8 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
                             cantPeople = cantidadPersonas.toInt(),
                             cost = costo.toInt()
                         )
-                        val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJob2xhIiwiaWF0IjoxNzI2ODgxNjMxLCJleHAiOjE3Mjc0ODY0MzF9.yZNIfIOh7sTkO7loVPSOc2Od8uzLC1QzM0q8phUcO5N7CukljJ_yOAAH_wywAaS3" // Replace with a method to get the token dynamically
-                        viewModel.sendPublication(publicationRequest, token, entrepreneurId) {
+
+                        viewModel.sendPublication(publicationRequest, entrepreneurId) {
                             CoroutineScope(Dispatchers.Main).launch {
                                 snackbarHostState.showSnackbar("Actividad creada correctamente")
                                 showDialogDatos = false
@@ -275,8 +275,8 @@ fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long) {
     val publications by viewModel.publications
 
     LaunchedEffect(Unit) {
-        val token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJob2xhIiwiaWF0IjoxNzI2ODgxNjMxLCJleHAiOjE3Mjc0ODY0MzF9.yZNIfIOh7sTkO7loVPSOc2Od8uzLC1QzM0q8phUcO5N7CukljJ_yOAAH_wywAaS3" // Replace with a method to get the token dynamically
-        viewModel.getPublications(token, entrepreneurId)
+
+        viewModel.getPublications(entrepreneurId)
     }
 
     publications.forEach { publication ->

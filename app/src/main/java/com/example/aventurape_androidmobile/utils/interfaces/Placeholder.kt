@@ -40,13 +40,11 @@ interface Placeholder {
 
     @POST("publication/create-publication")
     suspend fun sendPublication(
-        @Header("Authorization") token: String,
         @Body publication: PublicationRequest
     ): Response<Void>
 
     @GET("publication/{entrepreneurId}/publications")
     suspend fun getPublications(
-        @Header("Authorization") token: String,
         @Path("entrepreneurId") entrepreneurId: Long
     ): Response<List<PublicationResponse>>
 

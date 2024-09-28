@@ -18,7 +18,6 @@ class PublicationViewModel : ViewModel() {
     // Create publications
     fun sendPublication(
         publicationRequest: PublicationRequest,
-        token: String,
         entrepreneurId: Long,
         onSuccess: suspend () -> Unit,
     ) {
@@ -26,12 +25,11 @@ class PublicationViewModel : ViewModel() {
             try {
                 val response = RetrofitClient.placeholder
                     .sendPublication(
-                        "Bearer $token",
                         publicationRequest
                     )
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
-                        getPublications(token, entrepreneurId)
+                        getPublications(entrepreneurId)
                         onSuccess()
                     } else {
                         println("Failed to send publication: ${response.errorBody()?.string()}")
@@ -46,11 +44,11 @@ class PublicationViewModel : ViewModel() {
     }
 
     // List of publications
-    fun getPublications(token: String, entrepreneurId: Long) {
+    fun getPublications(entrepreneurId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = RetrofitClient.placeholder
-                    .getPublications("Bearer $token", entrepreneurId)
+                    .getPublications( entrepreneurId)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         publications.value = response.body() ?: emptyList()

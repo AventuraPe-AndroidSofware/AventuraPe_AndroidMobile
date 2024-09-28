@@ -54,7 +54,7 @@ fun SelectRoleScreen(viewModel: SignUpViewModel, navController: NavHostControlle
 
         Button(
             onClick = {
-                viewModel.setRole("ROLE_ADVENTUROUS")
+                viewModel.setRole("ROLE_ENTREPRENEUR")
                 navController.navigate(NavScreenAdventurer.signup_screen.name)
             }
         ) {

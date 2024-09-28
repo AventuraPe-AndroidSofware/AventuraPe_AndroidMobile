@@ -70,7 +70,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
 
         // Detalle de aventura
         composable("detail_adventure/{adventureId}") { backStackEntry ->
-            val adventureId = backStackEntry.arguments?.getLong("adventureId")
+            val adventureId = backStackEntry.arguments?.getString("adventureId")?.toLongOrNull()
             Log.d("AventureId", "detail_adventure/${adventureId}")  // Agrega esta línea
             Log.d("List Adventures", adventureViewModel.listaAdventures.toString())
             val adventure = adventureViewModel.listaAdventures.find { it.Id == adventureId }
