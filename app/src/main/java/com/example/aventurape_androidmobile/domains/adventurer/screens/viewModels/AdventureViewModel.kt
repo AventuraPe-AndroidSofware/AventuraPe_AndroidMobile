@@ -1,17 +1,15 @@
-package com.example.aventurape_androidmobile.domains.authentication.screens.states
+package com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.aventurape_androidmobile.Beans.Adventure
+import com.example.aventurape_androidmobile.domains.adventurer.models.Adventure
 import com.example.aventurape_androidmobile.utils.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 
 class AdventureViewModel : ViewModel() {
 

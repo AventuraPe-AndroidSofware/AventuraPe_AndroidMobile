@@ -1,10 +1,10 @@
 package com.example.aventurape_androidmobile.utils.interfaces
 
-import com.example.aventurape_androidmobile.Beans.Adventure
+import com.example.aventurape_androidmobile.domains.adventurer.models.Adventure
 import com.example.aventurape_androidmobile.utils.models.PublicationRequest
 import com.example.aventurape_androidmobile.utils.models.PublicationResponse
-import com.example.aventurape_androidmobile.Beans.Comment
-import com.example.aventurape_androidmobile.Beans.Review
+import com.example.aventurape_androidmobile.domains.adventurer.models.Comment
+import com.example.aventurape_androidmobile.domains.adventurer.models.Review
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignIn
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignUp
 import com.example.aventurape_androidmobile.utils.models.UserResponse
@@ -12,7 +12,6 @@ import com.example.aventurape_androidmobile.utils.models.UserRolesResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 

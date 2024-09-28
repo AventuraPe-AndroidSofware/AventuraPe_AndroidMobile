@@ -1,4 +1,4 @@
-package com.example.aventurape_androidmobile.domains.authentication.screens
+package com.example.aventurape_androidmobile.domains.adventurer.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.aventurape_androidmobile.Beans.Adventure
-import com.example.aventurape_androidmobile.Beans.Review
+import com.example.aventurape_androidmobile.domains.adventurer.models.Adventure
+import com.example.aventurape_androidmobile.domains.adventurer.models.Review
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,9 +37,9 @@ import kotlinx.coroutines.launch
 // Importa SnackbarHostState y SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarHost
-import com.example.aventurape_androidmobile.Beans.Comment
-import com.example.aventurape_androidmobile.domains.authentication.screens.states.getComments
-import com.example.aventurape_androidmobile.domains.authentication.screens.states.sendReview
+import com.example.aventurape_androidmobile.domains.adventurer.models.Comment
+import com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels.getComments
+import com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels.sendReview
 
 @Composable
 fun DetailView(navController: NavController, adventure: Adventure) {

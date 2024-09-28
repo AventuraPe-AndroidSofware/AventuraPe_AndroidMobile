@@ -1,4 +1,4 @@
-package com.example.aventurape_androidmobile.domains.authentication.screens
+package com.example.aventurape_androidmobile.domains.adventurer.screens
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -21,9 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.aventurape_androidmobile.Beans.Adventure
-import com.example.aventurape_androidmobile.domains.authentication.screens.states.AdventureViewModel
-import androidx.compose.material3.TextFieldDefaults
+import com.example.aventurape_androidmobile.domains.adventurer.models.Adventure
+import com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels.AdventureViewModel
 import androidx.compose.runtime.*
 
 @Composable

@@ -9,11 +9,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.aventurape_androidmobile.domains.adventurer.screens.AdventureScreen
+import com.example.aventurape_androidmobile.domains.adventurer.screens.DetailView
 import com.example.aventurape_androidmobile.domains.authentication.screens.*
-import com.example.aventurape_androidmobile.domains.authentication.screens.states.AdventureViewModel
-import com.example.aventurape_androidmobile.domains.authentication.screens.states.LoginViewModel
-import com.example.aventurape_androidmobile.domains.authentication.screens.states.SignUpViewModel
+import com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels.AdventureViewModel
+import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.LoginViewModel
+import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.SignUpViewModel
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AppPublicationManagement
+import com.example.aventurape_androidmobile.shared.screens.ErrorScreen
 
 @Composable
 fun AdventurerNavigation(navController: NavHostController, context: Context) {

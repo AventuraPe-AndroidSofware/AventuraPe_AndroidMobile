@@ -1,4 +1,4 @@
-package com.example.aventurape_androidmobile.Beans
+package com.example.aventurape_androidmobile.domains.adventurer.models
 
 data class Adventure(
     val Id: Long,

@@ -1,4 +1,4 @@
-package com.example.aventurape_androidmobile.domains.authentication.screens.states
+package com.example.aventurape_androidmobile.domains.authentication.screens.viewModels
 
 import android.content.Context
 import android.util.Log
@@ -7,10 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.aventurape_androidmobile.domains.authentication.models.UserLogged
+import com.example.aventurape_androidmobile.domains.authentication.screens.states.LoginState
 import com.example.aventurape_androidmobile.utils.RetrofitClient
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignIn
-import com.example.aventurape_androidmobile.utils.models.UserRequestSignUp
-import com.example.aventurape_androidmobile.utils.models.UserRolesResponse
 
 //Por si se habilita un cerrar sesion llamar a "PreferenceManager.clearUser(context)"
 class LoginViewModel : ViewModel() {

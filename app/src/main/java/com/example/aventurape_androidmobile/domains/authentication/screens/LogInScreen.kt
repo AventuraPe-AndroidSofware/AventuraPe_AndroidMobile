@@ -2,7 +2,6 @@
 package com.example.aventurape_androidmobile.domains.authentication.screens
 
 import PreferenceManager
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +33,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
@@ -42,7 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.aventurape_androidmobile.R
-import com.example.aventurape_androidmobile.domains.authentication.screens.states.LoginViewModel
+import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.LoginViewModel
 import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
 import com.example.aventurape_androidmobile.navigation.Roles
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily

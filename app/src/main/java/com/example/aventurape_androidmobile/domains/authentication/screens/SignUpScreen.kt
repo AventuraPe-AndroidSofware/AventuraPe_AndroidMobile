@@ -11,7 +11,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,8 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.aventurape_androidmobile.R
-import com.example.aventurape_androidmobile.domains.authentication.screens.states.LoginViewModel
-import com.example.aventurape_androidmobile.domains.authentication.screens.states.SignUpViewModel
+import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.SignUpViewModel
 import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import kotlinx.coroutines.launch

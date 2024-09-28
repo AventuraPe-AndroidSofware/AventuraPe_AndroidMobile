@@ -1,6 +1,6 @@
-package com.example.aventurape_androidmobile.domains.authentication.screens.states
+package com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels
 
-import com.example.aventurape_androidmobile.Beans.Review
+import com.example.aventurape_androidmobile.domains.adventurer.models.Review
 import com.example.aventurape_androidmobile.utils.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
