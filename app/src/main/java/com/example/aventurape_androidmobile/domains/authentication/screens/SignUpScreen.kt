@@ -56,7 +56,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
     LaunchedEffect(state.signupSuccess) {
         if (state.signupSuccess) {
             viewModel.resetRole()
-            navController.navigate(NavScreenAdventurer.adventure_screen.name)
+            navController.navigate(NavScreenAdventurer.home_adventurer_screen.name)
         }
     }
 

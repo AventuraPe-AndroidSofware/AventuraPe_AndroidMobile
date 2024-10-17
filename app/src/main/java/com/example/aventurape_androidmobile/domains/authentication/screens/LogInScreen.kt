@@ -122,7 +122,7 @@ fun LogInScreen(viewModel: LoginViewModel, navController: NavHostController){
                         // Navegar según el rol
                         when {
                             userRole != null && userRole.contains(Roles.ROLE_ADVENTUROUS.name) -> {
-                                navController.navigate(NavScreenAdventurer.adventure_screen.name)
+                                navController.navigate(NavScreenAdventurer.home_adventurer_screen.name)
                             }
                             userRole != null && userRole.contains(Roles.ROLE_ENTREPRENEUR.name) -> {
                                 navController.navigate(NavScreenAdventurer.adventure_publication_management.name)

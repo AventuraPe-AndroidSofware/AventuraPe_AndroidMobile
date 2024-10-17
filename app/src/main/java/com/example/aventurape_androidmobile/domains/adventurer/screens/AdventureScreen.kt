@@ -48,7 +48,7 @@ fun AdventureScreen(viewModel: AdventureViewModel, navController: NavController)
             TextField(
                 value = "", // Estado para el valor de búsqueda
                 onValueChange = { /* manejar la búsqueda */ },
-                placeholder = { Text("Locales y actividades") },
+                placeholder = { Text("Busca locales y actividades") },
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 8.dp)
@@ -77,16 +77,16 @@ fun AdventureScreen(viewModel: AdventureViewModel, navController: NavController)
 
 @Composable
 fun AdventureCard(adventure: Adventure, navController: NavController) {
-    Log.d("Adventure ID clicked:"," ${adventure.Id}") // Agrega esta línea
+    Log.d("Adventure ID clicked:"," ${adventure.Id}")
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(vertical = 8.dp)
+        .background(Color.White)
         .clickable {
             navController.navigate("detail_adventure/${adventure.Id}")
         },
         elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF0CCAA)),
-        border = BorderStroke(1.dp, Color(0xFFE8A63D)) // Borde de color
+        border = BorderStroke(1.dp, Color(0xFFE1AC6E)),
     ) {
         Column {
             AsyncImage(

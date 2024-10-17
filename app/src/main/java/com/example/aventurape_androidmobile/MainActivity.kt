@@ -46,7 +46,12 @@ fun MainScreen() {
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
 
     val shouldShowBottomBar = when (currentDestination) {
-        "login_screen", "register_screen", "welcome_screen" -> false
+        "login_screen",
+        "register_screen",
+        "welcome_screen",
+        "select_role_screen",
+        "signup_screen",
+        "error_screen" -> false
         else -> true
     }
 
