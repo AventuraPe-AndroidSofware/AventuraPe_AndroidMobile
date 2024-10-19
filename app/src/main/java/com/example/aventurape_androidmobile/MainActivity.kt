@@ -14,8 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.aventurape_androidmobile.navigation.AdventurerNavigation
+import com.example.aventurape_androidmobile.navigation.bottomBars.BottomNavigationAdventurer
+import com.example.aventurape_androidmobile.navigation.bottomBars.BottomNavigationBusiness
 import com.example.aventurape_androidmobile.ui.theme.AventuraPe_AndroidMobileTheme
 
 class MainActivity : ComponentActivity() {
@@ -33,20 +36,41 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(){
+fun MainScreen() {
     val navController = rememberNavController()
     val context = LocalContext.current // Obtiene el Context
-    Scaffold (
-        bottomBar ={
-            //BottomNavigationAdventurer(navController)
+
+    val isAdventurer = PreferenceManager.getUserRoles(context)?.contains("ROLE_ADVENTUROUS")
+    val isBusiness = PreferenceManager.getUserRoles(context)?.contains("ROLE_ENTREPRENEUR")
+
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
+
+    val shouldShowBottomBar = when (currentDestination) {
+        "login_screen",
+        "register_screen",
+        "welcome_screen",
+        "select_role_screen",
+        "signup_screen",
+        "error_screen" -> false
+        else -> true
+    }
+
+    Scaffold(
+        bottomBar = {
+            if (shouldShowBottomBar) {
+                when {
+                    isAdventurer == true -> BottomNavigationAdventurer(navController)
+                    isBusiness == true -> BottomNavigationBusiness(navController)
+                }
+            }
         }
-    ){
-        padding->
-        Box (
-            modifier=Modifier.padding(padding)
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .padding(padding)
                 .fillMaxSize()
-        ){
-            AdventurerNavigation(navController= navController, context = context)
+        ) {
+            AdventurerNavigation(navController = navController, context = context)
         }
     }
 }

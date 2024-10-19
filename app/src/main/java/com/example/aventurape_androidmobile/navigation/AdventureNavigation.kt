@@ -9,13 +9,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.aventurape_androidmobile.domains.adventurer.screens.AccountAdventurer
 import com.example.aventurape_androidmobile.domains.adventurer.screens.AdventureScreen
 import com.example.aventurape_androidmobile.domains.adventurer.screens.DetailView
+import com.example.aventurape_androidmobile.domains.adventurer.screens.HomeAdventurer
 import com.example.aventurape_androidmobile.domains.authentication.screens.*
 import com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels.AdventureViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.LoginViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.SignUpViewModel
+import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AccountEntrepreneur
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AppPublicationManagement
+import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.StaticsEntrepreneurScreen
 import com.example.aventurape_androidmobile.shared.screens.ErrorScreen
 
 @Composable
@@ -42,6 +46,24 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
             SignUpScreen(viewModel = signUpViewModel, navController = navController)
         }
 
+        //aventurero screens
+
+        composable(NavScreenAdventurer.home_adventurer_screen.name) {
+            if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
+                HomeAdventurer()
+            } else {
+                // Handle unauthorized access or redirect
+                navController.navigate(NavScreenAdventurer.error_screen.name)
+            }
+        }
+        composable(NavScreenAdventurer.account_adventurer_screen.name) {
+            if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
+                AccountAdventurer()
+            } else {
+                // Handle unauthorized access or redirect
+                navController.navigate(NavScreenAdventurer.error_screen.name)
+            }
+        }
         composable(NavScreenAdventurer.adventure_screen.name) {
             if (userRole != null && userRole!!.isNotEmpty()) {
                 when (userRole!![0]) {
@@ -49,25 +71,13 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
                         AdventureScreen(viewModel = adventureViewModel, navController = navController)
                     }
                     else -> {
-                        // Manejar otros roles o redirigir
-                        //navController.navigate(NavScreenAdventurer.error_screen.name)
+                        // Handle other roles or redirect
+                        navController.navigate(NavScreenAdventurer.error_screen.name)
                     }
                 }
             } else {
-                // Manejar el caso de rol no válido
-                //navController.navigate(NavScreenAdventurer.error_screen.name)
-            }
-        }
-        composable(NavScreenAdventurer.adventure_publication_management.name) {
-            userRole = PreferenceManager.getUserRoles(context);
-            if(userRole != null){
-                if(userRole!![0] == Roles.ROLE_ENTREPRENEUR.name){
-                    AppPublicationManagement(navController = navController, entrepreneurId = PreferenceManager.getUserId(context))
-                }
-                else{
-                    // Mostrar pantalla de error o redirigir
-                    //navController.navigate(NavScreenAdventurer.error_screen.name)
-                }
+                // Handle invalid role case
+                navController.navigate(NavScreenAdventurer.error_screen.name)
             }
         }
 
@@ -82,6 +92,36 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
             } ?: run {
                 println("Adventure not found for ID: $adventureId")  // Agrega esta línea
                 // Aquí puedes manejar el caso en que no se encuentra la aventura
+            }
+        }
+
+//------enterpreneur screens
+        composable(NavScreenAdventurer.adventure_publication_management.name) { //homescreen
+            userRole = PreferenceManager.getUserRoles(context);
+            if(userRole != null){
+                if(userRole!![0] == Roles.ROLE_ENTREPRENEUR.name){
+                    AppPublicationManagement(navController = navController, entrepreneurId = PreferenceManager.getUserId(context))
+                }
+                else{
+                    // Mostrar pantalla de error o redirigir
+                    //navController.navigate(NavScreenAdventurer.error_screen.name)
+                }
+            }
+        }
+        composable(NavScreenAdventurer.statics_entrepreneur_screen.name) {
+            if (userRole != null && userRole!!.contains(Roles.ROLE_ENTREPRENEUR.name)) {
+                StaticsEntrepreneurScreen()
+            } else {
+                // Handle unauthorized access or redirect
+                navController.navigate(NavScreenAdventurer.error_screen.name)
+            }
+        }
+        composable(NavScreenAdventurer.account_entrepreneur_screen.name) {
+            if (userRole != null && userRole!!.contains(Roles.ROLE_ENTREPRENEUR.name)) {
+                AccountEntrepreneur()
+            } else {
+                // Handle unauthorized access or redirect
+                navController.navigate(NavScreenAdventurer.error_screen.name)
             }
         }
 
