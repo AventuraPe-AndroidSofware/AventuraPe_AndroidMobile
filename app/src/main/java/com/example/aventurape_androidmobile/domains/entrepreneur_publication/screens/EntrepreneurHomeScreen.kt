@@ -49,7 +49,6 @@ import androidx.compose.material3.SnackbarHostState
 
 @Composable
 fun AppPublicationManagement(navController: NavController, entrepreneurId: Long) {
-    Text(text = "Bienvenido Aventurero", fontSize = 24.sp, fontWeight = FontWeight.Bold)
     val showForm = remember { mutableStateOf(false) }
     val viewModel = remember { PublicationViewModel() }
     val snackbarHostState = remember { SnackbarHostState() }

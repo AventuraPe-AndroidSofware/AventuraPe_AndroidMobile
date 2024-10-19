@@ -5,6 +5,5 @@ data class Review(
     val content: String,
     val rating: Int,
     val publicationId: Long,
-   // val userId: Long // Nuevo campo para el ID del usuario
-
+ //   val userId: Long // Nuevo campo para el ID del usuario
 )

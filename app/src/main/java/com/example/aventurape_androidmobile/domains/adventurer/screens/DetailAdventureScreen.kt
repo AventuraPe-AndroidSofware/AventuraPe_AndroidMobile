@@ -239,7 +239,7 @@ fun DetailView(navController: NavController, adventure: Adventure) {
                     id = adventure.Id,
                     publicationId = adventure.Id,
                     content = comment.text,
-                    rating = rating * 2
+                    rating = rating*2
                 )
                 sendReview(review, adventure.Id) {
                     comments.value = getComments(adventure.Id)
@@ -298,7 +298,7 @@ fun DetailView(navController: NavController, adventure: Adventure) {
                     modifier = Modifier.weight(1f).padding(start = 8.dp)
                 ) {
                     Text(
-                        text = "User: ${comment.id}", // Mostrar el username
+                        text = "Adventure ID: ${comment.adventureId}",
                         fontSize = 16.sp,
                         fontFamily = cabinFamily,
                         color = Color.Black

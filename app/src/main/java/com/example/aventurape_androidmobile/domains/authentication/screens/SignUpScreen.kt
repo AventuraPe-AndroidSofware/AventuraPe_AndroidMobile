@@ -56,7 +56,11 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
     LaunchedEffect(state.signupSuccess) {
         if (state.signupSuccess) {
             viewModel.resetRole()
-            navController.navigate(NavScreenAdventurer.home_adventurer_screen.name)
+            when (state.role) {
+                "ROLE_ADVENTUROUS" -> navController.navigate(NavScreenAdventurer.home_adventurer_screen.name)
+                "ROLE_ENTREPRENEUR" -> navController.navigate(NavScreenAdventurer.adventure_publication_management.name)
+                else -> navController.navigate(NavScreenAdventurer.error_screen.name)
+            }
         }
     }
 
