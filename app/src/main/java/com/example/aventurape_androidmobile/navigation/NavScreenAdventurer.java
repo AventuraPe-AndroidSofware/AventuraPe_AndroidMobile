@@ -12,6 +12,9 @@ public enum NavScreenAdventurer {
     adventure_screen,
     detail_adventure,
     account_adventurer_screen,
+    statics_adventurer_screen,
+    account_infomation_adventurer_screen,
+    favorite_publication_adventurer_screen,
 
     //entrepreneur
     adventure_publication_management,

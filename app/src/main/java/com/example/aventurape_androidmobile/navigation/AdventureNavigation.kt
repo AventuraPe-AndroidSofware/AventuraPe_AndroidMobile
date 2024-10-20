@@ -14,6 +14,7 @@ import com.example.aventurape_androidmobile.domains.adventurer.screens.DetailVie
 import com.example.aventurape_androidmobile.domains.adventurer.screens.HomeAdventurer
 import com.example.aventurape_androidmobile.domains.authentication.screens.*
 import com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels.AdventureViewModel
+import com.example.aventurape_androidmobile.domains.authentication.models.UserLogged
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.LoginViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.SignUpViewModel
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AccountEntrepreneur
@@ -26,6 +27,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
     val signUpViewModel: SignUpViewModel = viewModel()
     val adventureViewModel: AdventureViewModel = viewModel()
     var userRole = PreferenceManager.getUserRoles(context);
+    val username = PreferenceManager.getUsername(context)
 
     NavHost(
         navController = navController,
@@ -55,14 +57,6 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
                 navController.navigate(NavScreenAdventurer.error_screen.name)
             }
         }
-        composable(NavScreenAdventurer.account_adventurer_screen.name) {
-            if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
-                AccountAdventurer()
-            } else {
-                // Handle unauthorized access or redirect
-                navController.navigate(NavScreenAdventurer.error_screen.name)
-            }
-        }
         composable(NavScreenAdventurer.adventure_screen.name) {
             if (userRole != null && userRole!!.isNotEmpty()) {
                 when (userRole!![0]) {
@@ -76,6 +70,22 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
                 }
             } else {
                 // Handle invalid role case
+                navController.navigate(NavScreenAdventurer.error_screen.name)
+            }
+        }
+        composable(NavScreenAdventurer.account_adventurer_screen.name) {
+            if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
+                AccountAdventurer(navController = navController, username = username)
+            } else {
+                // Handle unauthorized access or redirect
+                navController.navigate(NavScreenAdventurer.error_screen.name)
+            }
+        }
+        composable(NavScreenAdventurer.account_infomation_adventurer_screen.name) {
+            if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
+                AccountAdventurer(navController = navController, username = username)
+            } else {
+                // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)
             }
         }
