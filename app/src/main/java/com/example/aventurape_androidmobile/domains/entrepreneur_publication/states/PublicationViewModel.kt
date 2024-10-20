@@ -1,4 +1,4 @@
-package com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.states
+package com.example.aventurape_androidmobile.domains.entrepreneur_publication.states
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

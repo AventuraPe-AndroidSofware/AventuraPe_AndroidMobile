@@ -20,6 +20,7 @@ public enum NavScreenAdventurer {
     adventure_publication_management,
     statics_entrepreneur_screen,
     account_entrepreneur_screen,
+    account_infomation_entrepreneur_screen,
 
     //general
     error_screen

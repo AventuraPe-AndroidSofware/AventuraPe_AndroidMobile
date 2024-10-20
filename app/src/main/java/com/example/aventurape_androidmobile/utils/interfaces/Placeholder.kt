@@ -5,13 +5,18 @@ import com.example.aventurape_androidmobile.utils.models.PublicationRequest
 import com.example.aventurape_androidmobile.utils.models.PublicationResponse
 import com.example.aventurape_androidmobile.domains.adventurer.models.Comment
 import com.example.aventurape_androidmobile.domains.adventurer.models.Review
+import com.example.aventurape_androidmobile.utils.models.UserRequestProfileA
+import com.example.aventurape_androidmobile.utils.models.UserRequestProfileE
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignIn
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignUp
 import com.example.aventurape_androidmobile.utils.models.UserResponse
+import com.example.aventurape_androidmobile.utils.models.UserResponseProfileA
+import com.example.aventurape_androidmobile.utils.models.UserResponseProfileE
 import com.example.aventurape_androidmobile.utils.models.UserRolesResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -51,4 +56,11 @@ interface Placeholder {
     suspend fun getUserById(
         @Path("userId") userId: Long
     ): Response<UserRolesResponse>
+
+    @POST("profiles/adventurer")
+    suspend fun saveProfileA(@Body request: UserRequestProfileA):Response<UserResponseProfileA>
+
+    @POST("profiles/entrepreneur")
+    suspend fun saveProfileE(@Body request: UserRequestProfileE):Response<UserResponseProfileE>
+
 }

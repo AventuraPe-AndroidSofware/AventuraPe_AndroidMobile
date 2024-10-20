@@ -1,5 +1,6 @@
 package com.example.aventurape_androidmobile.navigation
 
+import AccountInformationA
 import PreferenceManager
 import android.content.Context
 import android.util.Log
@@ -11,21 +12,27 @@ import androidx.navigation.compose.composable
 import com.example.aventurape_androidmobile.domains.adventurer.screens.AccountAdventurer
 import com.example.aventurape_androidmobile.domains.adventurer.screens.AdventureScreen
 import com.example.aventurape_androidmobile.domains.adventurer.screens.DetailView
+import com.example.aventurape_androidmobile.domains.adventurer.screens.FavoritePublicationsAdventurerScreen
 import com.example.aventurape_androidmobile.domains.adventurer.screens.HomeAdventurer
 import com.example.aventurape_androidmobile.domains.authentication.screens.*
-import com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels.AdventureViewModel
+import com.example.aventurape_androidmobile.domains.adventurer.viewModels.AdventureViewModel
+import com.example.aventurape_androidmobile.domains.adventurer.viewModels.ProfileViewModelA
 import com.example.aventurape_androidmobile.domains.authentication.models.UserLogged
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.LoginViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.SignUpViewModel
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AccountEntrepreneur
+import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AccountInformationE
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AppPublicationManagement
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.StaticsEntrepreneurScreen
+import com.example.aventurape_androidmobile.domains.entrepreneur_publication.viewModels.ProfileViewModelE
 import com.example.aventurape_androidmobile.shared.screens.ErrorScreen
 
 @Composable
 fun AdventurerNavigation(navController: NavHostController, context: Context) {
     val signUpViewModel: SignUpViewModel = viewModel()
     val adventureViewModel: AdventureViewModel = viewModel()
+    val profileViewModelA: ProfileViewModelA = viewModel()
+    val profileViewModelE: ProfileViewModelE = viewModel()
     var userRole = PreferenceManager.getUserRoles(context);
     val username = PreferenceManager.getUsername(context)
 
@@ -49,7 +56,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
 
         //aventurero screens
 
-        composable(NavScreenAdventurer.home_adventurer_screen.name) {
+        composable(NavScreenAdventurer.home_adventurer_screen.name) { //HOME
             if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
                 HomeAdventurer()
             } else {
@@ -57,7 +64,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
                 navController.navigate(NavScreenAdventurer.error_screen.name)
             }
         }
-        composable(NavScreenAdventurer.adventure_screen.name) {
+        composable(NavScreenAdventurer.adventure_screen.name) { //SEARCH
             if (userRole != null && userRole!!.isNotEmpty()) {
                 when (userRole!![0]) {
                     Roles.ROLE_ADVENTUROUS.name -> {
@@ -73,7 +80,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
                 navController.navigate(NavScreenAdventurer.error_screen.name)
             }
         }
-        composable(NavScreenAdventurer.account_adventurer_screen.name) {
+        composable(NavScreenAdventurer.account_adventurer_screen.name) { //ACCOUNT
             if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
                 AccountAdventurer(navController = navController, username = username)
             } else {
@@ -81,9 +88,17 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
                 navController.navigate(NavScreenAdventurer.error_screen.name)
             }
         }
-        composable(NavScreenAdventurer.account_infomation_adventurer_screen.name) {
+        composable(NavScreenAdventurer.account_infomation_adventurer_screen.name) { //PROFILE
             if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
-                AccountAdventurer(navController = navController, username = username)
+                AccountInformationA(navController = navController, viewModelA = profileViewModelA)
+            } else {
+                // Handle unauthorized access or redirect
+                navController.navigate(NavScreenAdventurer.error_screen.name)
+            }
+        }
+        composable(NavScreenAdventurer.favorite_publication_adventurer_screen.name) { //FAV PUBLICATIONS
+            if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
+                FavoritePublicationsAdventurerScreen(navController = navController)
             } else {
                 // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)
@@ -117,7 +132,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
                 }
             }
         }
-        composable(NavScreenAdventurer.statics_entrepreneur_screen.name) {
+        composable(NavScreenAdventurer.statics_entrepreneur_screen.name) {  //ESTADISTICAS
             if (userRole != null && userRole!!.contains(Roles.ROLE_ENTREPRENEUR.name)) {
                 StaticsEntrepreneurScreen()
             } else {
@@ -125,9 +140,17 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
                 navController.navigate(NavScreenAdventurer.error_screen.name)
             }
         }
-        composable(NavScreenAdventurer.account_entrepreneur_screen.name) {
+        composable(NavScreenAdventurer.account_entrepreneur_screen.name) { //ACCOUNT
             if (userRole != null && userRole!!.contains(Roles.ROLE_ENTREPRENEUR.name)) {
-                AccountEntrepreneur()
+                AccountEntrepreneur(navController = navController, username = username)
+            } else {
+                // Handle unauthorized access or redirect
+                navController.navigate(NavScreenAdventurer.error_screen.name)
+            }
+        }
+        composable(NavScreenAdventurer.account_infomation_entrepreneur_screen.name) { //PROFILE
+            if (userRole != null && userRole!!.contains(Roles.ROLE_ENTREPRENEUR.name)) {
+                AccountInformationE(navController = navController, viewModelE = profileViewModelE)
             } else {
                 // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)

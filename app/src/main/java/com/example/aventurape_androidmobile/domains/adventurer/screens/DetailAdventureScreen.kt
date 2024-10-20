@@ -38,8 +38,8 @@ import kotlinx.coroutines.launch
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarHost
 import com.example.aventurape_androidmobile.domains.adventurer.models.Comment
-import com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels.getComments
-import com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels.sendReview
+import com.example.aventurape_androidmobile.domains.adventurer.viewModels.getComments
+import com.example.aventurape_androidmobile.domains.adventurer.viewModels.sendReview
 
 @Composable
 fun DetailView(navController: NavController, adventure: Adventure) {

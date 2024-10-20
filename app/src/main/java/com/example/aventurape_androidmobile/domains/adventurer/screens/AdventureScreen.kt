@@ -22,7 +22,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.aventurape_androidmobile.domains.adventurer.models.Adventure
-import com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels.AdventureViewModel
+import com.example.aventurape_androidmobile.domains.adventurer.viewModels.AdventureViewModel
 import androidx.compose.runtime.*
 
 @Composable

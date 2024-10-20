@@ -1,4 +1,4 @@
-package com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels
+package com.example.aventurape_androidmobile.domains.adventurer.viewModels
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
