@@ -15,6 +15,7 @@ import com.example.aventurape_androidmobile.utils.models.UserResponseProfileE
 import com.example.aventurape_androidmobile.utils.models.UserRolesResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -47,6 +48,12 @@ interface Placeholder {
         @Body publication: PublicationRequest
     ): Response<Void>
 
+    //Eliminar publicación /api/v1/publication/{publicationId}/delete-publication
+    @DELETE("publication/{publicationId}/delete-publication")
+    suspend fun deletePublication(
+        @Path("publicationId") publicationId: Long
+    ): Response<Unit>
+
     @GET("publication/{entrepreneurId}/publications")
     suspend fun getPublications(
         @Path("entrepreneurId") entrepreneurId: Long
@@ -62,5 +69,6 @@ interface Placeholder {
 
     @POST("profiles/entrepreneur")
     suspend fun saveProfileE(@Body request: UserRequestProfileE):Response<UserResponseProfileE>
+
 
 }

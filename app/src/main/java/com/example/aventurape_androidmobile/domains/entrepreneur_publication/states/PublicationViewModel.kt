@@ -43,6 +43,34 @@ class PublicationViewModel : ViewModel() {
         }
     }
 
+    // Eliminar publicación
+    fun deletePublication(
+        publicationId: Long,
+        entrepreneurId: Long,
+        onSuccess: suspend () -> Unit,
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = RetrofitClient.placeholder
+                    .deletePublication(
+                        publicationId
+                    )
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        getPublications(entrepreneurId)
+                        onSuccess()
+                    } else {
+                        println("Failed to delete publication: ${response.errorBody()?.string()}")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    println("Failed to delete publication: ${e.message}")
+                }
+            }
+        }
+    }
+
     // List of publications
     fun getPublications(entrepreneurId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
