@@ -70,5 +70,8 @@ interface Placeholder {
     @POST("profiles/entrepreneur")
     suspend fun saveProfileE(@Body request: UserRequestProfileE):Response<UserResponseProfileE>
 
+    //ALL USERS
+    @GET("users")
+    suspend fun getUsers(): Response<List<UserRolesResponse>>
 
 }

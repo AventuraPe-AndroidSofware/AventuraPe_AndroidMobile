@@ -38,11 +38,12 @@ import kotlinx.coroutines.launch
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarHost
 import com.example.aventurape_androidmobile.domains.adventurer.models.Comment
+import com.example.aventurape_androidmobile.domains.adventurer.viewModels.AdventureViewModel
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.getComments
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.sendReview
 
 @Composable
-fun DetailView(navController: NavController, adventure: Adventure) {
+fun DetailView(navController: NavController, adventure: Adventure, viewModel: AdventureViewModel) {
     var comment by remember { mutableStateOf(TextFieldValue("")) }
     var rating by remember { mutableStateOf(0) }
     var hoverRating by remember { mutableStateOf(0) }
@@ -52,6 +53,7 @@ fun DetailView(navController: NavController, adventure: Adventure) {
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
+        viewModel.getUsers()
         comments.value = getComments(adventure.Id)
     }
 
@@ -59,7 +61,7 @@ fun DetailView(navController: NavController, adventure: Adventure) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(scrollState) // Añade el modificador de scroll
+            .verticalScroll(scrollState)
     ) {
         // Icono de regreso
         Icon(
@@ -231,7 +233,7 @@ fun DetailView(navController: NavController, adventure: Adventure) {
                 }
             )
         }
-       Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(18.dp))
         // Botón de enviar comentario
         Button(
             onClick = {
@@ -239,7 +241,7 @@ fun DetailView(navController: NavController, adventure: Adventure) {
                     id = adventure.Id,
                     publicationId = adventure.Id,
                     content = comment.text,
-                    rating = rating*2
+                    rating = rating * 2
                 )
                 sendReview(review, adventure.Id) {
                     comments.value = getComments(adventure.Id)
@@ -297,8 +299,9 @@ fun DetailView(navController: NavController, adventure: Adventure) {
                 Column(
                     modifier = Modifier.weight(1f).padding(start = 8.dp)
                 ) {
+                    val username = viewModel.getUsernameByAdventureId(comment.adventureId)
                     Text(
-                        text = "Adventure ID: ${comment.adventureId}",
+                        text = "Username: ${username ?: "Unknown"}",
                         fontSize = 16.sp,
                         fontFamily = cabinFamily,
                         color = Color.Black
@@ -319,7 +322,6 @@ fun DetailView(navController: NavController, adventure: Adventure) {
             }
             Spacer(modifier = Modifier.height(15.dp))
         }
-
     }
 }
 

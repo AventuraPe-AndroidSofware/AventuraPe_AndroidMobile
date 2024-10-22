@@ -107,19 +107,19 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
 
         // Detalle de aventura
         composable("detail_adventure/{adventureId}") { backStackEntry ->
-            val adventureId = backStackEntry.arguments?.getString("adventureId")?.toLongOrNull()
-            Log.d("AventureId", "detail_adventure/${adventureId}")  // Agrega esta línea
-            Log.d("List Adventures", adventureViewModel.listaAdventures.toString())
-            val adventure = adventureViewModel.listaAdventures.find { it.Id == adventureId }
-            adventure?.let { adventureDetail ->
-                DetailView(navController = navController, adventure = adventureDetail)
-            } ?: run {
-                println("Adventure not found for ID: $adventureId")  // Agrega esta línea
-                // Aquí puedes manejar el caso en que no se encuentra la aventura
-            }
+        val adventureId = backStackEntry.arguments?.getString("adventureId")?.toLongOrNull()
+        Log.d("AventureId", "detail_adventure/${adventureId}")  // Agrega esta línea
+        Log.d("List Adventures", adventureViewModel.listaAdventures.toString())
+        val adventure = adventureViewModel.listaAdventures.find { it.Id == adventureId }
+        adventure?.let { adventureDetail ->
+            DetailView(navController = navController, adventure = adventureDetail, viewModel = adventureViewModel)
+        } ?: run {
+            println("Adventure not found for ID: $adventureId")  // Agrega esta línea
+            // Aquí puedes manejar el caso en que no se encuentra la aventura
         }
+    }
 
-//------enterpreneur screens
+        //------enterpreneur screens
         composable(NavScreenAdventurer.adventure_publication_management.name) { //homescreen
             userRole = PreferenceManager.getUserRoles(context);
             if(userRole != null){
