@@ -1,4 +1,4 @@
-package com.example.aventurape_androidmobile.domains.adventurer.screens.viewModels
+package com.example.aventurape_androidmobile.domains.adventurer.viewModels
 
 import com.example.aventurape_androidmobile.domains.adventurer.models.Comment
 import com.example.aventurape_androidmobile.utils.RetrofitClient

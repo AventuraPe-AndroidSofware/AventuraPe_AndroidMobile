@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.aventurape_androidmobile.R
-import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.states.PublicationViewModel
+import com.example.aventurape_androidmobile.domains.entrepreneur_publication.states.PublicationViewModel
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import com.example.aventurape_androidmobile.utils.models.PublicationRequest
 import com.example.aventurape_androidmobile.utils.models.PublicationResponse

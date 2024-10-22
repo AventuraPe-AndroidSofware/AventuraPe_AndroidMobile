@@ -35,14 +35,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    val context = LocalContext.current // Obtiene el Context
+    val context = LocalContext.current
 
-    val isAdventurer = PreferenceManager.getUserRoles(context)?.contains("ROLE_ADVENTUROUS")
-    val isBusiness = PreferenceManager.getUserRoles(context)?.contains("ROLE_ENTREPRENEUR")
+    val userRoles = PreferenceManager.getUserRoles(context)
+    val isAdventurer = userRoles?.contains("ROLE_ADVENTUROUS") == true
+    val isBusiness = userRoles?.contains("ROLE_ENTREPRENEUR") == true
 
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
 
@@ -60,8 +60,8 @@ fun MainScreen() {
         bottomBar = {
             if (shouldShowBottomBar) {
                 when {
-                    isAdventurer == true -> BottomNavigationAdventurer(navController)
-                    isBusiness == true -> BottomNavigationBusiness(navController)
+                    isAdventurer -> BottomNavigationAdventurer(navController)
+                    isBusiness -> BottomNavigationBusiness(navController)
                 }
             }
         }

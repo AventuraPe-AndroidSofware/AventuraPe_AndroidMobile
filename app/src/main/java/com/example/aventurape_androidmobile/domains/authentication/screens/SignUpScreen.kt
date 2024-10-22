@@ -22,6 +22,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -42,24 +43,31 @@ import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
-
+fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController) {
     val state = viewModel.state
 
     // Mejora de la interfaz de usuario (Salto de campos) Experimental
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val (currentFocusRequester, nextFocusRequester) = remember { FocusRequester.createRefs() }
+    val context = LocalContext.current // Move LocalContext.current here
 
-
-    // Efecto lanzado cuando cambia el estado de loginSuccess
+    // Efecto lanzado cuando cambia el estado de signupSuccess
     LaunchedEffect(state.signupSuccess) {
         if (state.signupSuccess) {
             viewModel.resetRole()
-            when (state.role) {
-                "ROLE_ADVENTUROUS" -> navController.navigate(NavScreenAdventurer.home_adventurer_screen.name)
-                "ROLE_ENTREPRENEUR" -> navController.navigate(NavScreenAdventurer.adventure_publication_management.name)
-                else -> navController.navigate(NavScreenAdventurer.error_screen.name)
+            // Obtener el rol del usuario desde el ViewModel o directamente desde PreferenceManager
+            val userRole = PreferenceManager.getUserRoles(context)
+            when {
+                userRole != null && userRole.contains("ROLE_ADVENTUROUS") -> {
+                    navController.navigate(NavScreenAdventurer.home_adventurer_screen.name)
+                }
+                userRole != null && userRole.contains("ROLE_ENTREPRENEUR") -> {
+                    navController.navigate(NavScreenAdventurer.adventure_publication_management.name)
+                }
+                else -> {
+                    navController.navigate(NavScreenAdventurer.error_screen.name)
+                }
             }
         }
     }
@@ -74,7 +82,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
             contentDescription = "Logo image",
             modifier = Modifier.size(200.dp)
         )
-        Text(text = "Bienvenido !!", fontFamily = cabinFamily,fontSize = 15.sp, fontWeight = FontWeight.Normal)
+        Text(text = "Bienvenido !!", fontFamily = cabinFamily, fontSize = 15.sp, fontWeight = FontWeight.Normal)
         Text(text = "Sign Up", fontFamily = cabinFamily, fontSize = 42.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.size(10.dp))
@@ -86,7 +94,6 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
             label = {
                 Text(text = "User", fontFamily = cabinFamily, fontWeight = FontWeight.Normal)
             },
-            //Mejora de interfaz de usuario (Salto de campos) Experimental
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(onNext = {
@@ -101,7 +108,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
         Spacer(modifier = Modifier.size(5.dp))
         OutlinedTextField(
             value = state.password,
-            onValueChange = { viewModel.inputData(state.username, it , state.confirmPassword) },
+            onValueChange = { viewModel.inputData(state.username, it, state.confirmPassword) },
             label = {
                 Text(text = "Password", fontFamily = cabinFamily, fontWeight = FontWeight.Bold)
             },
@@ -120,7 +127,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
         Spacer(modifier = Modifier.size(5.dp))
         OutlinedTextField(
             value = state.confirmPassword,
-            onValueChange = { viewModel.inputData(state.username, state.password , it) },
+            onValueChange = { viewModel.inputData(state.username, state.password, it) },
             label = {
                 Text(text = "Confirm password", fontFamily = cabinFamily, fontWeight = FontWeight.Bold)
             },
@@ -138,7 +145,19 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
                 if (state.password == state.confirmPassword) {
                     viewModel.viewModelScope.launch {
                         viewModel.signUpUser(state.username, state.password)
-                        navController.navigate(NavScreenAdventurer.adventure_screen.name) // Navegar a la nueva pantalla
+                        // Obtener el rol del usuario después del registro
+                        val userRole = PreferenceManager.getUserRoles(context)
+                        when {
+                            userRole != null && userRole.contains("ROLE_ADVENTUROUS") -> {
+                                navController.navigate(NavScreenAdventurer.home_adventurer_screen.name)
+                            }
+                            userRole != null && userRole.contains("ROLE_ENTREPRENEUR") -> {
+                                navController.navigate(NavScreenAdventurer.adventure_publication_management.name)
+                            }
+                            else -> {
+                                navController.navigate(NavScreenAdventurer.error_screen.name)
+                            }
+                        }
                     }
                 } else {
                     viewModel.validatePassword(state.password, state.confirmPassword)
@@ -149,7 +168,7 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
         }
         Spacer(modifier = Modifier.size(10.dp))
 
-        // Texto para iniciar sesion
+        // Texto para iniciar sesión
         ClickableText(
             text = AnnotatedString(
                 text = "¿Ya tienes una cuenta? Inicia sesión",
@@ -159,8 +178,8 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
                             color = Color.Blue,
                             textDecoration = TextDecoration.Underline
                         ),
-                        start = 23, // Start index of "Crear cuenta"
-                        end = 36   // End index of "Crear cuenta"
+                        start = 23,
+                        end = 36
                     )
                 )
             ),
@@ -174,7 +193,6 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
         )
 
         // Mostrar el popup si hay un error
-
         if (state.errorMessage != null) {
             AlertDialog(
                 onDismissRequest = { /* Ignorar o hacer alguna acción si se quiere cerrar el popup */ },
