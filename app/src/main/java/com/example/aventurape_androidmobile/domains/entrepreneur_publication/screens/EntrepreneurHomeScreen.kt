@@ -5,11 +5,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
@@ -46,6 +50,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.ui.draw.clip
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
 @Composable
 fun AppPublicationManagement(navController: NavController, entrepreneurId: Long) {
@@ -108,6 +115,18 @@ fun AppPublicationManagement(navController: NavController, entrepreneurId: Long)
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
+
+
+        // Refresh Icon
+        Image(
+            painter = painterResource(id = R.drawable.ic_refresh),
+            contentDescription = "Refresh Icon",
+            modifier = Modifier
+                .size(24.dp)
+                .clickable { viewModel.getPublications(entrepreneurId) }
+                .padding(16.dp)
+        )
+
         CardPublications(viewModel, entrepreneurId)
 
         if (showForm.value) {
@@ -272,45 +291,117 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
 @Composable
 fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long) {
     val publications by viewModel.publications
+    val snackbarHostState = remember { SnackbarHostState() }
+    SnackbarHost(hostState = snackbarHostState)
 
     LaunchedEffect(Unit) {
-
         viewModel.getPublications(entrepreneurId)
     }
 
-    publications.forEach { publication ->
-        Card(
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
-            elevation = CardDefaults.cardElevation(8.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFE6E6E6))
-        ) {
-            Column {
-                Image(
-                    painter = painterResource(id = R.drawable.aventurapelogo), //aca modificar
-                    contentDescription = "Logo AventuraPe",
-                    modifier = Modifier
-                        .size(width = 150.dp, height = 100.dp)
-                        .align(Alignment.Start)
-                        .padding(10.dp, 0.dp, 0.dp, 0.dp)
-                )
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = publication.nameActivity,
-                        fontFamily = cabinFamily,
-                        fontSize = 16.sp,
-                        color = Color(0xFF000000),
-                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
-                    )
-                    Text(
-                        text = publication.description,
-                        fontFamily = cabinFamily,
-                        fontSize = 16.sp,
-                        color = Color(0xFF000000),
-                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
-                    )
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp)
+    ) {
+        items(publications) { publication ->
+            Card(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
+                elevation = CardDefaults.cardElevation(8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFE6E6E6))
+            ) {
+                Column {
+                    Box(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(15.dp)) // Apply rounded corners
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(publication.image)
+                                .build(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize() // Fill the Box
+                        )
+                    }
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row {
+                            Text(
+                                text = "Nombre: ",
+                                fontFamily = cabinFamily,
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF000000),
+                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
+                            )
+                            Text(
+                                text = publication.nameActivity,
+                                fontFamily = cabinFamily,
+                                fontSize = 16.sp,
+                                color = Color(0xFF000000),
+                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
+                            )
+                        }
+                        Row {
+                            Text(
+                                text = "Descripción: ",
+                                fontFamily = cabinFamily,
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF000000),
+                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
+                            )
+                            Text(
+                                text = publication.description,
+                                fontFamily = cabinFamily,
+                                fontSize = 16.sp,
+                                color = Color(0xFF000000),
+                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
+                            )
+                        }
+                        Row {
+                            Text(
+                                text = "Cant.Personas: ",
+                                fontFamily = cabinFamily,
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF000000),
+                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
+                            )
+                            Text(
+                                text = publication.cantPeople.toString(),
+                                fontFamily = cabinFamily,
+                                fontSize = 16.sp,
+                                color = Color(0xFF000000),
+                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
+                            )
+                        }
+
+                        // Delete Button
+                        TextButton(
+                            onClick = {
+                                viewModel.deletePublication(publication.Id, entrepreneurId) {
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        snackbarHostState.showSnackbar("Publicación eliminada correctamente")
+                                    }
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                contentColor = Color.White,
+                                containerColor = Color(0xFFA61B1B)
+                            ),
+                            modifier = Modifier.padding(top = 8.dp)
+                        ) {
+                            Text(text = "Eliminar",
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = cabinFamily,
+                                fontSize = 16.sp)
+                        }
+                    }
                 }
             }
         }
