@@ -16,6 +16,8 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -80,6 +82,21 @@ fun AccountAdventurer(navController: NavHostController, username: String?){
                 navController.navigate(NavScreenAdventurer.favorite_publication_adventurer_screen.name)
             }
         )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        /// Logout Button
+        Button(
+            onClick = {
+                navController.navigate(NavScreenAdventurer.login_screen.name) {
+                    popUpTo(NavScreenAdventurer.home_adventurer_screen.name) { inclusive = true }
+                }
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF765532)),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text("Cerrar sesión", color = Color.White)
+        }
 
     }
 }
