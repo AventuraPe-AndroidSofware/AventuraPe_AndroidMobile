@@ -5,6 +5,8 @@ import com.example.aventurape_androidmobile.utils.models.PublicationRequest
 import com.example.aventurape_androidmobile.utils.models.PublicationResponse
 import com.example.aventurape_androidmobile.domains.adventurer.models.Comment
 import com.example.aventurape_androidmobile.domains.adventurer.models.Review
+import com.example.aventurape_androidmobile.utils.models.FavoritePublicationRequest
+import com.example.aventurape_androidmobile.utils.models.FavoritePublicationResponse
 import com.example.aventurape_androidmobile.utils.models.UserRequestProfileA
 import com.example.aventurape_androidmobile.utils.models.UserRequestProfileE
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignIn
@@ -48,11 +50,26 @@ interface Placeholder {
         @Body publication: PublicationRequest
     ): Response<Void>
 
+//agregar una aventura a favoritos
+    @POST("favorite-publications/create-favorite-publication")
+    suspend fun addFavoritePublication(
+        @Body request: FavoritePublicationRequest
+    ): Response<FavoritePublicationResponse>
+    @GET("getFavoritePublicationByProfileId/{profileId}")
+    suspend fun getFavoritePublicationByProfileId(
+        @Path("profileId") profileId: Long
+    ): Response<List<FavoritePublicationResponse>>
+
     //Eliminar publicación /api/v1/publication/{publicationId}/delete-publication
     @DELETE("publication/{publicationId}/delete-publication")
     suspend fun deletePublication(
         @Path("publicationId") publicationId: Long
     ): Response<Unit>
+
+    @GET("publication/{publicationId}")
+    suspend fun getAdventureById(
+        @Path("publicationId") publicationId: Long
+    ): Response<Adventure>
 
     @GET("publication/{entrepreneurId}/publications")
     suspend fun getPublications(
@@ -70,6 +87,11 @@ interface Placeholder {
     @POST("profiles/entrepreneur")
     suspend fun saveProfileE(@Body request: UserRequestProfileE):Response<UserResponseProfileE>
 
+    @GET("profiles/adventurer/user/{userId}")
+    suspend fun getProfileByUserIdA(@Path("userId") userId: Long): Response<UserResponseProfileA>
+
+    @GET("profiles/entrepreneur/user/{userId}")
+    suspend fun getProfileByUserIdE(@Path("userId") userId: Long): Response<UserResponseProfileE>
     //ALL USERS
     @GET("users")
     suspend fun getUsers(): Response<List<UserRolesResponse>>

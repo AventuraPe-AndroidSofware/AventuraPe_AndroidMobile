@@ -24,6 +24,11 @@ import coil.request.ImageRequest
 import com.example.aventurape_androidmobile.domains.adventurer.models.Adventure
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.AdventureViewModel
 import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.aventurape_androidmobile.domains.adventurer.viewModels.FavoriteAdventureViewModel
+import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
+import kotlinx.coroutines.launch
+import java.io.Console
 
 @Composable
 fun AdventureScreen(viewModel: AdventureViewModel, navController: NavController) {
@@ -46,8 +51,8 @@ fun AdventureScreen(viewModel: AdventureViewModel, navController: NavController)
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextField(
-                value = "", // Estado para el valor de búsqueda
-                onValueChange = { /* manejar la búsqueda */ },
+                value = searchQuery, // Estado para el valor de búsqueda
+                onValueChange = { searchQuery = it }, // manejar la búsqueda
                 placeholder = { Text("Busca locales y actividades") },
                 modifier = Modifier
                     .weight(1f)
@@ -63,28 +68,28 @@ fun AdventureScreen(viewModel: AdventureViewModel, navController: NavController)
             }
         }
 
-        // Lista de aventuras
+        // Lista de aventuras favoritas
         LazyColumn(contentPadding = PaddingValues(
             horizontal = 15.dp,
             vertical = 5.dp
-        )) {
+        )
+        ) {
             items(viewModel.listaAdventures) { adventure ->
-                AdventureCard(adventure, navController)
+                AdventureCard(adventure, navController, snackbarHostState = SnackbarHostState())
             }
         }
     }
-}
 
+}
 @Composable
-fun AdventureCard(adventure: Adventure, navController: NavController) {
-    Log.d("Adventure ID clicked:"," ${adventure.Id}")
+fun AdventureCard(adventure: Adventure, navController: NavController, snackbarHostState: SnackbarHostState) {
+    val coroutineScope = rememberCoroutineScope()
+
+    Log.d("Adventure ID clicked:", "${adventure.Id}")
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(vertical = 8.dp)
-        .background(Color.White)
-        .clickable {
-            navController.navigate("detail_adventure/${adventure.Id}")
-        },
+        .background(Color.White),
         elevation = CardDefaults.cardElevation(8.dp),
         border = BorderStroke(1.dp, Color(0xFFE1AC6E)),
     ) {
@@ -110,6 +115,39 @@ fun AdventureCard(adventure: Adventure, navController: NavController) {
                 fontSize = 14.sp,
                 textAlign = TextAlign.Start
             )
+        }
+        Row {
+            Button(
+                onClick = { navController.navigate("detail_adventure/${adventure.Id}") },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE8A63D)),
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text(text = "Detalle", color = Color.White)
+            }
+            val viewModel: FavoriteAdventureViewModel = viewModel()
+            Button(
+                onClick = {
+                    viewModel.addFavoritePublication(publicationId = adventure.Id) { response ->
+                        coroutineScope.launch {
+                            if (response != null && response.isSuccessful) {
+                                Log.d("Lo agregasteee wii.", "${adventure.Id}")
+
+                                // Show success message
+                                snackbarHostState.showSnackbar("Added to favorites successfully!")
+                            } else {
+                                Log.d("Failed to add to favorites.", "Failed to add to favorites.")
+
+                                // Show error message
+                                snackbarHostState.showSnackbar("Failed to add to favorites.")
+                            }
+                        }
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD78927)),
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text(text = "Favorito", color = Color.White)
+            }
         }
     }
 }

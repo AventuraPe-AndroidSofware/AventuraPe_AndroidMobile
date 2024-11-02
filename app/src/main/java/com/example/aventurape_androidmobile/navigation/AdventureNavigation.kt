@@ -1,6 +1,7 @@
 package com.example.aventurape_androidmobile.navigation
 
 import AccountInformationA
+import AccountInformationE
 import PreferenceManager
 import android.content.Context
 import android.util.Log
@@ -21,7 +22,6 @@ import com.example.aventurape_androidmobile.domains.authentication.models.UserLo
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.LoginViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.SignUpViewModel
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AccountEntrepreneur
-import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AccountInformationE
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AppPublicationManagement
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.StaticsEntrepreneurScreen
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.viewModels.ProfileViewModelE
@@ -90,7 +90,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
         }
         composable(NavScreenAdventurer.account_infomation_adventurer_screen.name) { //PROFILE
             if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
-                AccountInformationA(navController = navController, viewModelA = profileViewModelA)
+                AccountInformationA(navController = navController, viewModelA = profileViewModelA, userId = PreferenceManager.getUserId(context))
             } else {
                 // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)
@@ -98,7 +98,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
         }
         composable(NavScreenAdventurer.favorite_publication_adventurer_screen.name) { //FAV PUBLICATIONS
             if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
-                FavoritePublicationsAdventurerScreen(navController = navController)
+                FavoritePublicationsAdventurerScreen(navController = navController, profileId = PreferenceManager.getUserId(context))
             } else {
                 // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)
@@ -114,8 +114,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
         adventure?.let { adventureDetail ->
             DetailView(navController = navController, adventure = adventureDetail, viewModel = adventureViewModel)
         } ?: run {
-            println("Adventure not found for ID: $adventureId")  // Agrega esta línea
-            // Aquí puedes manejar el caso en que no se encuentra la aventura
+            println("Adventure not found for ID: $adventureId")
         }
     }
 
@@ -150,7 +149,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
         }
         composable(NavScreenAdventurer.account_infomation_entrepreneur_screen.name) { //PROFILE
             if (userRole != null && userRole!!.contains(Roles.ROLE_ENTREPRENEUR.name)) {
-                AccountInformationE(navController = navController, viewModelE = profileViewModelE)
+                AccountInformationE(navController = navController, viewModelE = profileViewModelE,userId = PreferenceManager.getUserId(context))
             } else {
                 // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)

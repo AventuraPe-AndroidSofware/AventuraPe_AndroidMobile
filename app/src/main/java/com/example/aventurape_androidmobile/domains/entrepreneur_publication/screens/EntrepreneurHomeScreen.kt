@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -42,10 +41,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.aventurape_androidmobile.R
-import com.example.aventurape_androidmobile.domains.entrepreneur_publication.states.PublicationViewModel
+import com.example.aventurape_androidmobile.domains.entrepreneur_publication.viewModels.PublicationViewModel
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import com.example.aventurape_androidmobile.utils.models.PublicationRequest
-import com.example.aventurape_androidmobile.utils.models.PublicationResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

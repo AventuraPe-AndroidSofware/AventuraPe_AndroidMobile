@@ -1,4 +1,4 @@
-package com.example.aventurape_androidmobile.domains.entrepreneur_publication.states
+package com.example.aventurape_androidmobile.domains.entrepreneur_publication.viewModels
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
