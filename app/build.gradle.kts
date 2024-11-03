@@ -60,6 +60,9 @@ dependencies {
     //navegacion entre pantallas
     implementation ("androidx.navigation:navigation-compose:2.5.3")
 
+    //Refresh
+    implementation ("com.google.accompanist:accompanist-swiperefresh:0.24.13-rc")
+
 
     implementation ("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
     implementation(libs.androidx.core.ktx)

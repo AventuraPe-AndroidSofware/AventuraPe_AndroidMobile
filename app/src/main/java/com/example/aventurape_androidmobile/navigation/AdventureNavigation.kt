@@ -98,6 +98,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
         }
         composable(NavScreenAdventurer.favorite_publication_adventurer_screen.name) { //FAV PUBLICATIONS
             if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
+                Log.d("FavoritePublications", "Entered FavoritePublicationsAdventurerScreen")
                 FavoritePublicationsAdventurerScreen(navController = navController, profileId = PreferenceManager.getUserId(context))
             } else {
                 // Handle unauthorized access or redirect

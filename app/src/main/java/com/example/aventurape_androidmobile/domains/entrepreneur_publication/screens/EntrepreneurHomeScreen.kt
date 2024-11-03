@@ -51,13 +51,13 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.draw.clip
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.aventurape_androidmobile.utils.models.PublicationResponse
 
 @Composable
 fun AppPublicationManagement(navController: NavController, entrepreneurId: Long) {
     val showForm = remember { mutableStateOf(false) }
     val viewModel = remember { PublicationViewModel() }
     val snackbarHostState = remember { SnackbarHostState() }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -114,7 +114,6 @@ fun AppPublicationManagement(navController: NavController, entrepreneurId: Long)
             )
         }
 
-
         // Refresh Icon
         Image(
             painter = painterResource(id = R.drawable.ic_refresh),
@@ -125,7 +124,7 @@ fun AppPublicationManagement(navController: NavController, entrepreneurId: Long)
                 .padding(16.dp)
         )
 
-        CardPublications(viewModel, entrepreneurId)
+        CardPublications(viewModel, entrepreneurId, navController)
 
         if (showForm.value) {
             FormActivity(viewModel, navController, entrepreneurId)
@@ -133,7 +132,6 @@ fun AppPublicationManagement(navController: NavController, entrepreneurId: Long)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormActivity(viewModel: PublicationViewModel, navController: NavController, entrepreneurId: Long) {
     var showDialogDatos by remember { mutableStateOf(true) }
@@ -287,9 +285,12 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
 }
 
 @Composable
-fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long) {
+fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long, navController: NavController) {
     val publications by viewModel.publications
     val snackbarHostState = remember { SnackbarHostState() }
+    val showEditForm = remember { mutableStateOf(false) }
+    var selectedPublication by remember { mutableStateOf<PublicationResponse?>(null) }
+
     SnackbarHost(hostState = snackbarHostState)
 
     LaunchedEffect(Unit) {
@@ -379,29 +380,220 @@ fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long) {
                             )
                         }
 
-                        // Delete Button
-                        TextButton(
-                            onClick = {
-                                viewModel.deletePublication(publication.Id, entrepreneurId) {
-                                    CoroutineScope(Dispatchers.Main).launch {
-                                        snackbarHostState.showSnackbar("Publicación eliminada correctamente")
-                                    }
-                                }
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.White,
-                                containerColor = Color(0xFFA61B1B)
-                            ),
+                        // Row for Edit and Delete Buttons
+                        Row(
                             modifier = Modifier.padding(top = 8.dp)
                         ) {
-                            Text(text = "Eliminar",
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = cabinFamily,
-                                fontSize = 16.sp)
+                            // Edit Button
+                            TextButton(
+                                onClick = {
+                                    selectedPublication = publication
+                                    showEditForm.value = true
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.White,
+                                    containerColor = Color(0xFFE8A63D)
+                                ),
+                                modifier = Modifier.padding(end = 8.dp)
+                            ) {
+                                Text(text = "Editar",
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = cabinFamily,
+                                    fontSize = 16.sp)
+                            }
+
+                            // Delete Button
+                            TextButton(
+                                onClick = {
+                                    viewModel.deletePublication(publication.Id, entrepreneurId) {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            snackbarHostState.showSnackbar("Publicación eliminada correctamente")
+                                        }
+                                    }
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.White,
+                                    containerColor = Color(0xFFA61B1B)
+                                )
+                            ) {
+                                Text(text = "Eliminar",
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = cabinFamily,
+                                    fontSize = 16.sp)
+                            }
                         }
                     }
                 }
             }
         }
+    }
+    if (showEditForm.value && selectedPublication != null) {
+        FormEditActivity(viewModel, navController, entrepreneurId, selectedPublication!!) {
+            showEditForm.value = false
+            viewModel.getPublications(entrepreneurId)
+        }
+    }
+}
+@Composable
+fun FormEditActivity(
+    viewModel: PublicationViewModel,
+    navController: NavController,
+    entrepreneurId: Long,
+    publication: PublicationResponse,
+    onDismiss: () -> Unit
+) {
+    var showDialogDatos by remember { mutableStateOf(true) }
+    var nombreActividad by remember { mutableStateOf(publication.nameActivity) }
+    var descripcion by remember { mutableStateOf(publication.description) }
+    var duracion by remember { mutableStateOf(publication.timeDuration) }
+    var foto by remember { mutableStateOf(publication.image) }
+    var cantidadPersonas by remember { mutableStateOf(publication.cantPeople.toString()) }
+    var costo by remember { mutableStateOf(publication.cost.toString()) }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    SnackbarHost(hostState = snackbarHostState)
+
+    if (showDialogDatos) {
+        AlertDialog(
+            onDismissRequest = {
+                showDialogDatos = false
+                onDismiss()
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val publicationRequest = PublicationRequest(
+                            Id = publication.Id,
+                            entrepreneurId = entrepreneurId,
+                            nameActivity = nombreActividad,
+                            description = descripcion,
+                            timeDuration = duracion,
+                            image = foto,
+                            cantPeople = cantidadPersonas.toInt(),
+                            cost = costo.toInt()
+                        )
+
+                        viewModel.updatePublication(publicationRequest) { success ->
+                            if (success) {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    snackbarHostState.showSnackbar("Actividad actualizada correctamente")
+                                    showDialogDatos = false
+                                    onDismiss()
+                                }
+                            }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.White,
+                        containerColor = Color(0xFF6D4C41)
+                    )
+                ) {
+                    Text(text = "Aceptar",
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = cabinFamily)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showDialogDatos = false
+                    onDismiss()
+                },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color(0xFFFFFFFF),
+                        containerColor = Color(0xFFA78479)
+                    )
+                ) {
+                    Text(text = "Cancelar",
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = cabinFamily)
+                }
+            },
+            title = {
+                Text(
+                    text = "DETALLES DE LA ACTIVIDAD",
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = cabinFamily,
+                    modifier = Modifier
+                        .padding(2.dp, 5.dp, 2.dp, 5.dp)
+                )
+            },
+            text = {
+                Column(
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(text = "Nombre de la actividad",
+                        fontFamily = cabinFamily,
+                        fontSize = 16.sp,
+                        color = Color(0xFF000000),
+                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                    OutlinedTextField(value = nombreActividad,
+                        onValueChange = { nombreActividad = it },
+                        placeholder = { Text(text="Ejem: Taller de pintura",
+                            fontFamily = cabinFamily) },
+                        modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 5.dp),
+                    )
+
+                    Text(text = "Descripción",
+                        fontFamily = cabinFamily,
+                        fontSize = 16.sp,
+                        color = Color(0xFF000000),
+                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                    OutlinedTextField(value = descripcion,
+                        onValueChange = { descripcion = it },
+                        placeholder = { Text(text="Descripción",
+                            fontFamily = cabinFamily) },
+                        modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                    )
+
+                    Text(text = "Tiempo de duración",
+                        fontFamily = cabinFamily,
+                        fontSize = 16.sp,
+                        color = Color(0xFF000000),
+                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                    OutlinedTextField(value = duracion,
+                        onValueChange = { duracion = it },
+                        placeholder = { Text(text="Hora o minuto",
+                            fontFamily = cabinFamily)  },
+                        modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                    )
+
+                    Text(text = "Foto",
+                        fontFamily = cabinFamily,
+                        fontSize = 16.sp,
+                        color = Color(0xFF000000),
+                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                    OutlinedTextField(value = foto,
+                        onValueChange = { foto = it },
+                        placeholder = { Text(text="Insertar foto",
+                            fontFamily = cabinFamily)  },
+                        modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                    )
+
+                    Text(text = "Cant. Personas",
+                        fontFamily = cabinFamily,
+                        fontSize = 16.sp,
+                        color = Color(0xFF000000),
+                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                    OutlinedTextField(value = cantidadPersonas,
+                        onValueChange = { cantidadPersonas = it },
+                        placeholder = { Text(text="1,2..",
+                            fontFamily = cabinFamily)  },
+                        modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                    )
+
+                    Text(text = "Costo",
+                        fontFamily = cabinFamily,
+                        fontSize = 16.sp,
+                        color = Color(0xFF000000),
+                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                    OutlinedTextField(value = costo,
+                        onValueChange = { costo = it },
+                        placeholder = { Text(text="S/.",
+                            fontFamily = cabinFamily)  },
+                        modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                    )
+                }
+            }
+        )
     }
 }

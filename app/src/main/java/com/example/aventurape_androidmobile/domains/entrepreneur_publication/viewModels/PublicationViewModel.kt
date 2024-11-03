@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aventurape_androidmobile.utils.RetrofitClient
+import com.example.aventurape_androidmobile.utils.RetrofitClient.placeholder
 import com.example.aventurape_androidmobile.utils.models.PublicationRequest
 import com.example.aventurape_androidmobile.utils.models.PublicationResponse
 import kotlinx.coroutines.Dispatchers
@@ -87,6 +88,13 @@ class PublicationViewModel : ViewModel() {
             } catch (e: Exception) {
                 publications.value = emptyList()
             }
+        }
+    }
+
+    fun updatePublication(publicationRequest: PublicationRequest, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val response = placeholder.updatePublication(publicationRequest.Id, publicationRequest)
+            onResult(response.isSuccessful)
         }
     }
 }
