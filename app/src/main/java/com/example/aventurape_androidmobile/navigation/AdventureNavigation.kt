@@ -1,6 +1,7 @@
 package com.example.aventurape_androidmobile.navigation
 
 import AccountInformationA
+import HomeAdventurerScreen
 import PreferenceManager
 import android.content.Context
 import android.util.Log
@@ -13,11 +14,10 @@ import com.example.aventurape_androidmobile.domains.adventurer.screens.AccountAd
 import com.example.aventurape_androidmobile.domains.adventurer.screens.AdventureScreen
 import com.example.aventurape_androidmobile.domains.adventurer.screens.DetailView
 import com.example.aventurape_androidmobile.domains.adventurer.screens.FavoritePublicationsAdventurerScreen
-import com.example.aventurape_androidmobile.domains.adventurer.screens.HomeAdventurer
 import com.example.aventurape_androidmobile.domains.authentication.screens.*
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.AdventureViewModel
+import com.example.aventurape_androidmobile.domains.adventurer.viewModels.HomeAdventurerViewModel
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.ProfileViewModelA
-import com.example.aventurape_androidmobile.domains.authentication.models.UserLogged
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.LoginViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.SignUpViewModel
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AccountEntrepreneur
@@ -33,6 +33,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
     val adventureViewModel: AdventureViewModel = viewModel()
     val profileViewModelA: ProfileViewModelA = viewModel()
     val profileViewModelE: ProfileViewModelE = viewModel()
+    val homeAdventurerViewModel: HomeAdventurerViewModel = viewModel()
     var userRole = PreferenceManager.getUserRoles(context);
     val username = PreferenceManager.getUsername(context)
 
@@ -58,7 +59,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
 
         composable(NavScreenAdventurer.home_adventurer_screen.name) { //HOME
             if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
-                HomeAdventurer()
+                HomeAdventurerScreen(viewModel = homeAdventurerViewModel, navController = navController)
             } else {
                 // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)
