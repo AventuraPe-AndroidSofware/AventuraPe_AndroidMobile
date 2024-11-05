@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 // Importa SnackbarHostState y SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.ui.layout.ContentScale
 import com.example.aventurape_androidmobile.domains.adventurer.models.Comment
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.AdventureViewModel
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.getComments
@@ -92,8 +93,9 @@ fun DetailView(navController: NavController, adventure: Adventure, viewModel: Ad
                     .build(),
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
+                    .size(350.dp, 200.dp)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
             )
         }
 

@@ -46,6 +46,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.ui.Alignment
@@ -123,8 +124,8 @@ fun FavoritePublicationsAdventurerScreen(navController: NavController, profileId
                                     .build(),
                                 contentDescription = adventure.nameActivity,
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(180.dp),
+                                    .size(350.dp, 200.dp)
+                                    .fillMaxWidth(),
                                 contentScale = ContentScale.Crop
                             )
 
