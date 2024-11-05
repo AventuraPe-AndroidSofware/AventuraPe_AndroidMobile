@@ -11,6 +11,7 @@ import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ThumbUp
@@ -53,13 +54,28 @@ fun StaticsEntrepreneurScreen(context: Context) {
             .fillMaxSize()
             .padding(20.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.aventurapelogo),
-            contentDescription = "Logo AventuraPe",
-            modifier = Modifier
-                .size(width = 150.dp, height = 100.dp)
-                .padding(10.dp, 0.dp, 0.dp, 0.dp)
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.aventurapelogo),
+                contentDescription = "Logo AventuraPe",
+                modifier = Modifier
+                    .size(width = 150.dp, height = 100.dp)
+                    .padding(10.dp, 0.dp, 0.dp, 0.dp)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.ic_refresh),
+                contentDescription = "Refresh Icon",
+                modifier = Modifier
+                    .size(width = 30.dp, height = 30.dp)
+                    .padding(5.dp, 0.dp, 0.dp, 0.dp)
+                    .clickable {
+                        if (selectedTab == "Más comentados") {
+                            statisticsViewModel.getTop5AdventuresByComments()
+                        } }
+            )
+        }
         Divider(
             color = Color(0xFF6D4C41),
             thickness = 2.dp,
