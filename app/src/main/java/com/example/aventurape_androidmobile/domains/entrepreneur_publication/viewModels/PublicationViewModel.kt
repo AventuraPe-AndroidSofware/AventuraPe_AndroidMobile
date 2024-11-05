@@ -97,4 +97,6 @@ class PublicationViewModel : ViewModel() {
             onResult(response.isSuccessful)
         }
     }
+
+
 }

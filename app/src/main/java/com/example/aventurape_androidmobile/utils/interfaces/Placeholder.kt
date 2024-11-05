@@ -41,6 +41,7 @@ interface Placeholder {
         @Body review: Review
     ): Response<Void>
 
+
     @GET("publication/{publicationId}/comments")
     suspend fun getComments(
         @Path("publicationId") publicationId: Long
@@ -80,6 +81,9 @@ interface Placeholder {
     suspend fun deletePublication(
         @Path("publicationId") publicationId: Long
     ): Response<Unit>
+
+    //ESTADISTICAS EL ENTREPRENEUR
+
 
     @GET("publication/{publicationId}")
     suspend fun getAdventureById(

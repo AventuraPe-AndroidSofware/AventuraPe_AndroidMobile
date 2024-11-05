@@ -3,9 +3,11 @@ package com.example.aventurape_androidmobile.navigation
 import AccountInformationA
 import AccountInformationE
 import PreferenceManager
+import StaticsEntrepreneurScreen
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -23,7 +25,6 @@ import com.example.aventurape_androidmobile.domains.authentication.screens.viewM
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.SignUpViewModel
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AccountEntrepreneur
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AppPublicationManagement
-import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.StaticsEntrepreneurScreen
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.viewModels.ProfileViewModelE
 import com.example.aventurape_androidmobile.shared.screens.ErrorScreen
 
@@ -134,7 +135,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
         }
         composable(NavScreenAdventurer.statics_entrepreneur_screen.name) {  //ESTADISTICAS
             if (userRole != null && userRole!!.contains(Roles.ROLE_ENTREPRENEUR.name)) {
-                StaticsEntrepreneurScreen()
+                StaticsEntrepreneurScreen(context = LocalContext.current)
             } else {
                 // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)
