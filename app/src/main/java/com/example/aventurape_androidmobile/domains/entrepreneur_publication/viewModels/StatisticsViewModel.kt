@@ -8,12 +8,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.aventurape_androidmobile.domains.adventurer.models.Adventure
 import com.example.aventurape_androidmobile.domains.adventurer.models.Comment
 import com.example.aventurape_androidmobile.utils.RetrofitClient
+import com.example.aventurape_androidmobile.utils.models.PublicationByOrderResponse
 import com.example.aventurape_androidmobile.utils.models.PublicationResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.util.Log
 
 class StatisticsViewModel: ViewModel() {
+
 
     private val _userAdventures = MutableLiveData<List<Adventure>>()
     val userAdventures: LiveData<List<Adventure>> get() = _userAdventures
@@ -84,4 +87,25 @@ class StatisticsViewModel: ViewModel() {
             }
         }
     }
+    private val _topRatedPublications = MutableLiveData<List<PublicationByOrderResponse>>()
+    val topRatedPublications: LiveData<List<PublicationByOrderResponse>> get() = _topRatedPublications
+
+    fun getFavoritePublicationsByProfileIdOrderedByRating(entrepreneurId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = RetrofitClient.placeholder.getFavoritePublicationsByProfileIdOrderedByRating(entrepreneurId)
+            withContext(Dispatchers.Main) {
+                if (response.body() != null) {
+                    Log.d("API Response", response.body().toString())
+                    _topRatedPublications.value = response.body()
+                } else {
+                    Log.d("API Response", "Response body is null")
+                }
+                if (!response.isSuccessful) {
+                    Log.d("API Response", "Request failed with code: ${response.code()}")
+                }
+            }
+        }
+    }
+
+
 }
