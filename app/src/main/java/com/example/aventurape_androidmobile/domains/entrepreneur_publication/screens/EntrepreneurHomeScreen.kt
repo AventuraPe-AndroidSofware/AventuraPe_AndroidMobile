@@ -1,5 +1,6 @@
 package com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,12 +16,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
@@ -42,17 +47,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.aventurape_androidmobile.R
-import com.example.aventurape_androidmobile.domains.entrepreneur_publication.states.PublicationViewModel
+import com.example.aventurape_androidmobile.domains.entrepreneur_publication.viewModels.PublicationViewModel
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import com.example.aventurape_androidmobile.utils.models.PublicationRequest
-import com.example.aventurape_androidmobile.utils.models.PublicationResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.aventurape_androidmobile.utils.models.PublicationResponse
 
 @Composable
 fun AppPublicationManagement(navController: NavController, entrepreneurId: Long) {
@@ -60,19 +67,33 @@ fun AppPublicationManagement(navController: NavController, entrepreneurId: Long)
     val viewModel = remember { PublicationViewModel() }
     val snackbarHostState = remember { SnackbarHostState() }
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp),
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.aventurapelogo),
-            contentDescription = "Logo AventuraPe",
+        Row(
             modifier = Modifier
-                .size(width = 150.dp, height = 100.dp)
-                .align(Alignment.Start)
-                .padding(10.dp, 0.dp, 0.dp, 0.dp)
-        )
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.aventurapelogo),
+                contentDescription = "Logo AventuraPe",
+                modifier = Modifier
+                    .size(width = 150.dp, height = 100.dp)
+                    .padding(10.dp, 0.dp, 0.dp, 0.dp)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.ic_refresh),
+                contentDescription = "Refresh Icon",
+                modifier = Modifier
+                    .clickable { viewModel.getPublications(entrepreneurId) }
+                    .padding(170.dp, 0.dp, 0.dp, 0.dp)
+            )
+        }
+
         Box(
             modifier = Modifier
                 .width(350.dp)
@@ -84,6 +105,7 @@ fun AppPublicationManagement(navController: NavController, entrepreneurId: Long)
                 modifier = Modifier.align(Alignment.Center)
             )
         }
+
         Text(
             text = "Posts",
             fontSize = 28.sp,
@@ -93,11 +115,26 @@ fun AppPublicationManagement(navController: NavController, entrepreneurId: Long)
             textAlign = TextAlign.Left,
             modifier = Modifier.padding(20.dp, 20.dp, 0.dp, 0.dp)
         )
+        Row(
+            modifier = Modifier.padding(20.dp, 5.dp, 0.dp, 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.AccountBox,
+                contentDescription = null,
+                modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+                tint = Color(0xFF6D4C41),
+            )
+            Text(
+                text = "¡Publica tus actividades y comparte con los aventureros!",
+                fontSize = 15.sp,
+            )
+        }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(20.dp, 20.dp, 0.dp, 0.dp)
+                .padding(85.dp, 0.dp, 0.dp, 20.dp)
                 .clickable { showForm.value = !showForm.value }
         ) {
             Image(
@@ -116,18 +153,7 @@ fun AppPublicationManagement(navController: NavController, entrepreneurId: Long)
             )
         }
 
-
-        // Refresh Icon
-        Image(
-            painter = painterResource(id = R.drawable.ic_refresh),
-            contentDescription = "Refresh Icon",
-            modifier = Modifier
-                .size(24.dp)
-                .clickable { viewModel.getPublications(entrepreneurId) }
-                .padding(16.dp)
-        )
-
-        CardPublications(viewModel, entrepreneurId)
+        CardPublications(viewModel, entrepreneurId, navController)
 
         if (showForm.value) {
             FormActivity(viewModel, navController, entrepreneurId)
@@ -135,7 +161,6 @@ fun AppPublicationManagement(navController: NavController, entrepreneurId: Long)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormActivity(viewModel: PublicationViewModel, navController: NavController, entrepreneurId: Long) {
     var showDialogDatos by remember { mutableStateOf(true) }
@@ -203,85 +228,95 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
                     text = "DETALLES DE LA ACTIVIDAD",
                     fontWeight = FontWeight.Bold,
                     fontFamily = cabinFamily,
-                    modifier = Modifier
-                        .padding(2.dp, 5.dp, 2.dp, 5.dp)
+                    color = Color(0xFF6D4C41),
+                    textAlign = TextAlign.Center
                 )
             },
+            modifier = Modifier
+                .width(400.dp)
+                .height(600.dp),
             text = {
-                Column(
-                    horizontalAlignment = Alignment.Start
+                LazyColumn(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.width(300.dp)
                 ) {
-                    Text(text = "Nombre de la actividad",
-                        fontFamily = cabinFamily,
-                        fontSize = 16.sp,
-                        color = Color(0xFF000000),
-                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
-                    OutlinedTextField(value = nombreActividad,
-                        onValueChange = { nombreActividad = it },
-                        placeholder = { Text(text="Ejem: Taller de pintura",
-                            fontFamily = cabinFamily) },
-                        modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 5.dp),
-                    )
-
-                    Text(text = "Descripción",
-                        fontFamily = cabinFamily,
-                        fontSize = 16.sp,
-                        color = Color(0xFF000000),
-                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
-                    OutlinedTextField(value = descripcion,
-                        onValueChange = { descripcion = it },
-                        placeholder = { Text(text="Descripción",
-                            fontFamily = cabinFamily) },
-                        modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
-                    )
-
-                    Text(text = "Tiempo de duración",
-                        fontFamily = cabinFamily,
-                        fontSize = 16.sp,
-                        color = Color(0xFF000000),
-                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
-                    OutlinedTextField(value = duracion,
-                        onValueChange = { duracion = it },
-                        placeholder = { Text(text="Hora o minuto",
-                            fontFamily = cabinFamily)  },
-                        modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
-                    )
-
-                    Text(text = "Foto",
-                        fontFamily = cabinFamily,
-                        fontSize = 16.sp,
-                        color = Color(0xFF000000),
-                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
-                    OutlinedTextField(value = foto,
-                        onValueChange = { foto = it },
-                        placeholder = { Text(text="Insertar foto",
-                            fontFamily = cabinFamily)  },
-                        modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
-                    )
-
-                    Text(text = "Cant. Personas",
-                        fontFamily = cabinFamily,
-                        fontSize = 16.sp,
-                        color = Color(0xFF000000),
-                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
-                    OutlinedTextField(value = cantidadPersonas,
-                        onValueChange = { cantidadPersonas = it },
-                        placeholder = { Text(text="1,2..",
-                            fontFamily = cabinFamily)  },
-                        modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
-                    )
-
-                    Text(text = "Costo",
-                        fontFamily = cabinFamily,
-                        fontSize = 16.sp,
-                        color = Color(0xFF000000),
-                        modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
-                    OutlinedTextField(value = costo,
-                        onValueChange = { costo = it },
-                        placeholder = { Text(text="S/.",
-                            fontFamily = cabinFamily)  },
-                        modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
-                    )
+                    item {
+                        Text(text = "Nombre de la actividad",
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                        OutlinedTextField(value = nombreActividad,
+                            onValueChange = { nombreActividad = it },
+                            placeholder = { Text(text="Ejem: Taller de pintura",
+                                fontFamily = cabinFamily) },
+                            modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 5.dp),)
+                    }
+                    item {
+                        Text(text = "Descripción",
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                        OutlinedTextField(value = descripcion,
+                            onValueChange = { descripcion = it },
+                            placeholder = { Text(text="Descripción",
+                                fontFamily = cabinFamily) },
+                            modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                        )
+                    }
+                    item {
+                        Text(text = "Tiempo de duración",
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                        OutlinedTextField(value = duracion,
+                            onValueChange = { duracion = it },
+                            placeholder = { Text(text="Hora o minuto",
+                                fontFamily = cabinFamily)  },
+                            modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                        )
+                    }
+                    item {
+                        Text(text = "Foto",
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                        OutlinedTextField(value = foto,
+                            onValueChange = { foto = it },
+                            placeholder = { Text(text="Insertar foto",
+                                fontFamily = cabinFamily)  },
+                            modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                        )
+                    }
+                    item {
+                        Text(text = "Cant. Personas",
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                        OutlinedTextField(value = cantidadPersonas,
+                            onValueChange = { cantidadPersonas = it },
+                            placeholder = { Text(text="1,2..",
+                                fontFamily = cabinFamily)  },
+                            modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                        )
+                    }
+                    item {
+                        Text(text = "Costo",
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                        OutlinedTextField(value = costo,
+                            onValueChange = { costo = it },
+                            placeholder = { Text(text="S/.",
+                                fontFamily = cabinFamily)  },
+                            modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                        )
+                    }
                 }
             }
         )
@@ -289,9 +324,12 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
 }
 
 @Composable
-fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long) {
+fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long, navController: NavController) {
     val publications by viewModel.publications
     val snackbarHostState = remember { SnackbarHostState() }
+    val showEditForm = remember { mutableStateOf(false) }
+    var selectedPublication by remember { mutableStateOf<PublicationResponse?>(null) }
+
     SnackbarHost(hostState = snackbarHostState)
 
     LaunchedEffect(Unit) {
@@ -301,68 +339,66 @@ fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp)
     ) {
         items(publications) { publication ->
             Card(
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(8.dp)
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(8.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFE6E6E6))
+                border = BorderStroke(1.dp, Color(0xFFA6A2A2)),
+                shape = RoundedCornerShape(8.dp)
             ) {
                 Column {
                     Box(
                         modifier = Modifier
-                            .padding(5.dp)
+                            .padding(16.dp, 16.dp, 16.dp, 0.dp)
                             .fillMaxWidth()
                             .fillMaxHeight()
-                            .clip(RoundedCornerShape(15.dp)) // Apply rounded corners
                     ) {
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data(publication.image)
                                 .build(),
                             contentDescription = null,
-                            modifier = Modifier.fillMaxSize() // Fill the Box
+                            modifier = Modifier
+                                .size(350.dp, 200.dp)
+                                .fillMaxWidth(),
+                            contentScale = ContentScale.Crop
                         )
                     }
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Row {
-                            Text(
-                                text = "Nombre: ",
-                                fontFamily = cabinFamily,
-                                fontSize = 17.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF000000),
-                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
-                            )
-                            Text(
-                                text = publication.nameActivity,
-                                fontFamily = cabinFamily,
-                                fontSize = 16.sp,
-                                color = Color(0xFF000000),
-                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
-                            )
-                        }
-                        Row {
-                            Text(
-                                text = "Descripción: ",
-                                fontFamily = cabinFamily,
-                                fontSize = 17.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF000000),
-                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
-                            )
-                            Text(
-                                text = publication.description,
-                                fontFamily = cabinFamily,
-                                fontSize = 16.sp,
-                                color = Color(0xFF000000),
-                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
-                            )
-                        }
+                        Text(
+                            text = "Nombre: ",
+                            fontFamily = cabinFamily,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 0.dp)
+                        )
+                        Text(
+                            text = publication.nameActivity,
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(0.dp, 5.dp, 2.dp, 4.dp)
+                        )
+                        Text(
+                            text = "Descripción: ",
+                            fontFamily = cabinFamily,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 0.dp)
+                        )
+                        Text(
+                            text = publication.description,
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(0.dp, 5.dp, 2.dp, 10.dp)
+                        )
+
                         Row {
                             Text(
                                 text = "Cant.Personas: ",
@@ -381,29 +417,232 @@ fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long) {
                             )
                         }
 
-                        // Delete Button
-                        TextButton(
-                            onClick = {
-                                viewModel.deletePublication(publication.Id, entrepreneurId) {
-                                    CoroutineScope(Dispatchers.Main).launch {
-                                        snackbarHostState.showSnackbar("Publicación eliminada correctamente")
-                                    }
-                                }
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.White,
-                                containerColor = Color(0xFFA61B1B)
-                            ),
+                        // Row for Edit and Delete Buttons
+                        Row(
                             modifier = Modifier.padding(top = 8.dp)
                         ) {
-                            Text(text = "Eliminar",
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = cabinFamily,
-                                fontSize = 16.sp)
+                            // Edit Button
+                            TextButton(
+                                onClick = {
+                                    selectedPublication = publication
+                                    showEditForm.value = true
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.White,
+                                    containerColor = Color(0xFFE8A63D)
+                                ),
+                                modifier = Modifier.padding(end = 8.dp)
+                            ) {
+                                Text(text = "Editar",
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = cabinFamily,
+                                    fontSize = 16.sp)
+                            }
+
+                            // Delete Button
+                            TextButton(
+                                onClick = {
+                                    viewModel.deletePublication(publication.Id, entrepreneurId) {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            snackbarHostState.showSnackbar("Publicación eliminada correctamente")
+                                        }
+                                    }
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.White,
+                                    containerColor = Color(0xFFA61B1B)
+                                )
+                            ) {
+                                Text(text = "Eliminar",
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = cabinFamily,
+                                    fontSize = 16.sp)
+                            }
                         }
                     }
                 }
             }
         }
+    }
+    if (showEditForm.value && selectedPublication != null) {
+        FormEditActivity(viewModel, navController, entrepreneurId, selectedPublication!!) {
+            showEditForm.value = false
+            viewModel.getPublications(entrepreneurId)
+        }
+    }
+}
+
+@Composable
+fun FormEditActivity(
+    viewModel: PublicationViewModel,
+    navController: NavController,
+    entrepreneurId: Long,
+    publication: PublicationResponse,
+    onDismiss: () -> Unit
+) {
+    var showDialogDatos by remember { mutableStateOf(true) }
+    var nombreActividad by remember { mutableStateOf(publication.nameActivity) }
+    var descripcion by remember { mutableStateOf(publication.description) }
+    var duracion by remember { mutableStateOf(publication.timeDuration) }
+    var foto by remember { mutableStateOf(publication.image) }
+    var cantidadPersonas by remember { mutableStateOf(publication.cantPeople.toString()) }
+    var costo by remember { mutableStateOf(publication.cost.toString()) }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    SnackbarHost(hostState = snackbarHostState)
+
+    if (showDialogDatos) {
+        AlertDialog(
+            onDismissRequest = {
+                showDialogDatos = false
+                onDismiss()
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val publicationRequest = PublicationRequest(
+                            Id = publication.Id,
+                            entrepreneurId = entrepreneurId,
+                            nameActivity = nombreActividad,
+                            description = descripcion,
+                            timeDuration = duracion,
+                            image = foto,
+                            cantPeople = cantidadPersonas.toInt(),
+                            cost = costo.toInt()
+                        )
+
+                        viewModel.updatePublication(publicationRequest) { success ->
+                            if (success) {
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    snackbarHostState.showSnackbar("Actividad actualizada correctamente")
+                                    showDialogDatos = false
+                                    onDismiss()
+                                }
+                            }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.White,
+                        containerColor = Color(0xFF6D4C41)
+                    )
+                ) {
+                    Text(text = "Aceptar",
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = cabinFamily)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showDialogDatos = false
+                    onDismiss()
+                },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color(0xFFFFFFFF),
+                        containerColor = Color(0xFFA78479)
+                    )
+                ) {
+                    Text(text = "Cancelar",
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = cabinFamily)
+                }
+            },
+            title = {
+                Text(
+                    text = "DETALLES DE LA ACTIVIDAD",
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = cabinFamily,
+                    color = Color(0xFF6D4C41),
+                    textAlign = TextAlign.Center
+                )
+            },
+            text = {
+                LazyColumn(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.width(300.dp)
+                ) {
+                    item {
+                        Text(text = "Nombre de la actividad",
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                        OutlinedTextField(value = nombreActividad,
+                            onValueChange = { nombreActividad = it },
+                            placeholder = { Text(text="Ejem: Taller de pintura",
+                                fontFamily = cabinFamily) },
+                            modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 5.dp),
+                        )
+                    }
+                    item {
+                        Text(text = "Descripción",
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                        OutlinedTextField(value = descripcion,
+                            onValueChange = { descripcion = it },
+                            placeholder = { Text(text="Descripción",
+                                fontFamily = cabinFamily) },
+                            modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                        )
+                    }
+                    item {
+                        Text(text = "Tiempo de duración",
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                        OutlinedTextField(value = duracion,
+                            onValueChange = { duracion = it },
+                            placeholder = { Text(text="Hora o minuto",
+                                fontFamily = cabinFamily)  },
+                            modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                        )
+                    }
+                    item {
+                        Text(text = "Foto",
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                        OutlinedTextField(value = foto,
+                            onValueChange = { foto = it },
+                            placeholder = { Text(text="Insertar foto",
+                                fontFamily = cabinFamily)  },
+                            modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                        )
+                    }
+                    item {
+                        Text(text = "Cant. Personas",
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                        OutlinedTextField(value = cantidadPersonas,
+                            onValueChange = { cantidadPersonas = it },
+                            placeholder = { Text(text="1,2..",
+                                fontFamily = cabinFamily)  },
+                            modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                        )
+                    }
+                    item {
+                        Text(text = "Costo",
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp))
+                        OutlinedTextField(value = costo,
+                            onValueChange = { costo = it },
+                            placeholder = { Text(text="S/.",
+                                fontFamily = cabinFamily)  },
+                            modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                        )
+                    }
+                }
+            },
+            modifier = Modifier
+                .width(400.dp)
+                .height(600.dp)
+        )
     }
 }

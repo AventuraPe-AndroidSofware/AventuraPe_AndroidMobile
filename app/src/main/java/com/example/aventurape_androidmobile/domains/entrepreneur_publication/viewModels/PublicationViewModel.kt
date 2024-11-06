@@ -1,10 +1,11 @@
-package com.example.aventurape_androidmobile.domains.entrepreneur_publication.states
+package com.example.aventurape_androidmobile.domains.entrepreneur_publication.viewModels
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aventurape_androidmobile.utils.RetrofitClient
+import com.example.aventurape_androidmobile.utils.RetrofitClient.placeholder
 import com.example.aventurape_androidmobile.utils.models.PublicationRequest
 import com.example.aventurape_androidmobile.utils.models.PublicationResponse
 import kotlinx.coroutines.Dispatchers
@@ -89,4 +90,13 @@ class PublicationViewModel : ViewModel() {
             }
         }
     }
+
+    fun updatePublication(publicationRequest: PublicationRequest, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val response = placeholder.updatePublication(publicationRequest.Id, publicationRequest)
+            onResult(response.isSuccessful)
+        }
+    }
+
+
 }

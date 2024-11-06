@@ -1,6 +1,8 @@
-import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -11,19 +13,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.example.aventurape_androidmobile.domains.adventurer.states.ProfileStateA
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.ProfileViewModelA
 import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
-
 import kotlinx.coroutines.launch
 
 @Composable
-fun AccountInformationA(navController: NavController, viewModelA: ProfileViewModelA) {
+fun AccountInformationA(
+    navController: NavController,
+    viewModelA: ProfileViewModelA,
+    userId: Long
+) {
     val state = viewModelA.state
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(userId) {
+        viewModelA.checkProfileExists(userId)
+    }
 
     LaunchedEffect(viewModelA.state.profileCompletedSucces) {
         if (viewModelA.state.profileCompletedSucces) {
@@ -32,162 +40,288 @@ fun AccountInformationA(navController: NavController, viewModelA: ProfileViewMod
         }
     }
 
-    Box(modifier = Modifier.verticalScroll(scrollState)) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xFFFAF6F3)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(16.dp)
+        ) {
+            // Header
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                ),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 2.dp
+                )
+            ) {
+                Text(
+                    text = "Información de la cuenta",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xBC765532),
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
+            if (viewModelA.profileExists) {
+                DisplayProfile(state)
+            } else {
+                EditProfile(state, viewModelA)
+            }
+        }
+    }
+}
+
+@Composable
+private fun DisplayProfile(state: ProfileStateA) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        )
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            ProfileItem("Nombre", state.firstName)
+            ProfileItem("Apellido", state.lastName)
+            ProfileItem("Email", state.email)
+            Divider(color = Color(0xFFEEE6E0))
+            ProfileItem("Dirección", state.street)
+            ProfileItem("Numero", state.number)
+            ProfileItem("Ciudad", state.city)
+            ProfileItem("Codigo postal", state.postalCode)
+            ProfileItem("País", state.country)
+            Divider(color = Color(0xFFEEE6E0))
+            ProfileItem(
+                "Género",
+                if (state.gender == "MALE") "Masculino" else if (state.gender == "FEMALE") "Femenino" else state.gender
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun EditProfile(
+    state: ProfileStateA,
+    viewModelA: ProfileViewModelA
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Save Button
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.Absolute.Right,
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
             ) {
                 Button(
                     onClick = {
-                        Log.d("AccountInformationA", "Save button clicked")
                         viewModelA.viewModelScope.launch {
-                            try {
-                                viewModelA.completeProfile(
-                                    state.firstName, state.lastName, state.email, state.street,
-                                    state.number, state.city, state.postalCode, state.country, state.gender
-                                )
-                                Log.d("AccountInformationA", "Profile completed successfully")
-                            } catch (e: Exception) {
-                                Log.e("AccountInformationA", "Error completing profile", e)
-                            }
+                            viewModelA.completeProfile(
+                                state.firstName, state.lastName, state.email,
+                                state.street, state.number, state.city,
+                                state.postalCode, state.country, state.gender
+                            )
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xBC765532),
-                        contentColor = Color.White
-                    )
+                        containerColor = Color(0xBC765532)
+                    ),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Save",
+                        text = "Guardar",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 16.sp
                     )
                 }
             }
 
-            Column(modifier= Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 8.dp),
-                horizontalAlignment = Alignment.Start){
-                Text(text = "Nombre", modifier=Modifier.width(100.dp),
-                    color=Color(0xBC765532), fontSize = 17.sp)
-                OutlinedTextField(modifier=Modifier.fillMaxWidth(),
-                    value = state.firstName,
-                    onValueChange = { viewModelA.inputProfileData(it, lastName = state.lastName, email = state.email, street = state.street, number = state.number, city = state.city, postalCode = state.postalCode, country= state.country, gender=state.gender) } ,
-                    label={Text("Nombre",fontFamily = cabinFamily, fontWeight = FontWeight.Normal)}
+            // Form Fields
+            ProfileTextField(
+                label = "Nombre",
+                value = state.firstName,
+                onValueChange = { viewModelA.inputProfileData(it, state.lastName, state.email, state.street, state.number, state.city, state.postalCode, state.country, state.gender) }
+            )
+
+            ProfileTextField(
+                label = "Apellido",
+                value = state.lastName,
+                onValueChange = { viewModelA.inputProfileData(state.firstName, it, state.email, state.street, state.number, state.city, state.postalCode, state.country, state.gender) }
+            )
+
+            ProfileTextField(
+                label = "Email",
+                value = state.email,
+                placeholder = "ejemplo@ejemplo.com",
+                onValueChange = { viewModelA.inputProfileData(state.firstName, state.lastName, it, state.street, state.number, state.city, state.postalCode, state.country, state.gender) }
+            )
+
+            ProfileTextField(
+                label = "Dirección",
+                value = state.street,
+                placeholder = "Calle",
+                onValueChange = { viewModelA.inputProfileData(state.firstName, state.lastName, state.email, it, state.number, state.city, state.postalCode, state.country, state.gender) }
+            )
+
+            ProfileTextField(
+                label = "Numero",
+                value = state.number,
+                placeholder = "+51 999 999 999",
+                onValueChange = { viewModelA.inputProfileData(state.firstName, state.lastName, state.email, state.street, it, state.city, state.postalCode, state.country, state.gender) }
+            )
+
+            ProfileTextField(
+                label = "Ciudad",
+                value = state.city,
+                onValueChange = { viewModelA.inputProfileData(state.firstName, state.lastName, state.email, state.street, state.number, it, state.postalCode, state.country, state.gender) }
+            )
+
+            ProfileTextField(
+                label = "Codigo postal",
+                value = state.postalCode,
+                placeholder = "00706",
+                onValueChange = { viewModelA.inputProfileData(state.firstName, state.lastName, state.email, state.street, state.number, state.city, it, state.country, state.gender) }
+            )
+
+            ProfileTextField(
+                label = "País",
+                value = state.country,
+                onValueChange = { viewModelA.inputProfileData(state.firstName, state.lastName, state.email, state.street, state.number, state.city, state.postalCode, it, state.gender) }
+            )
+
+            // Gender Selection
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Género",
+                    color = Color(0xBC765532),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
                 )
-            }
-            Spacer(modifier = Modifier.height(30.dp))
-            Column(modifier= Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 8.dp),
-                horizontalAlignment = Alignment.Start){
-                Text(text = "Apellido", modifier=Modifier.width(100.dp),
-                    color=Color(0xBC765532), fontSize = 17.sp)
-                OutlinedTextField(modifier=Modifier.fillMaxWidth(),
-                    value = state.lastName,
-                    onValueChange = { viewModelA.inputProfileData(firstName = state.firstName, it, email = state.email, street = state.street, number = state.number, city = state.city, postalCode = state.postalCode, country= state.country, gender=state.gender) } ,
-                    label={Text("Apellido",fontFamily = cabinFamily, fontWeight = FontWeight.Normal)}
-                )
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            Column(modifier= Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 8.dp),
-                horizontalAlignment = Alignment.Start){
-                Text(text = "Email", modifier=Modifier.width(100.dp),
-                    color=Color(0xBC765532), fontSize = 17.sp)
-                OutlinedTextField(modifier=Modifier.fillMaxWidth(),
-                    value = state.email,
-                    onValueChange = { viewModelA.inputProfileData(firstName = state.firstName, lastName = state.lastName, it, street = state.street, number = state.number, city = state.city, postalCode = state.postalCode, country= state.country, gender=state.gender) } ,
-                    label={Text("ejemplo@ejemplo.com",fontFamily = cabinFamily, fontWeight = FontWeight.Normal)}
-                )
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            Column(modifier= Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 8.dp),
-                horizontalAlignment = Alignment.Start){
-                Text(text = "Dirección", modifier=Modifier.width(100.dp),
-                    color=Color(0xBC765532), fontSize = 17.sp)
-                OutlinedTextField(modifier=Modifier.fillMaxWidth(),
-                    value = state.street,
-                    onValueChange = { viewModelA.inputProfileData(firstName = state.firstName, lastName = state.lastName, email = state.email, it, number = state.number, city = state.city, postalCode = state.postalCode, country= state.country, gender=state.gender) } ,
-                    label={Text("calle",fontFamily = cabinFamily, fontWeight = FontWeight.Normal)}
-                )
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            Column(modifier= Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 8.dp),
-                horizontalAlignment = Alignment.Start){
-                Text(text = "Numero", modifier=Modifier.width(100.dp),
-                    color=Color(0xBC765532), fontSize = 17.sp)
-                OutlinedTextField(modifier=Modifier.fillMaxWidth(),
-                    value = state.number,
-                    onValueChange = { viewModelA.inputProfileData(firstName = state.firstName, lastName = state.lastName, email = state.email, street = state.street, it, city = state.city, postalCode = state.postalCode, country= state.country, gender=state.gender) } ,
-                    label={Text("+51 999 999 999",fontFamily = cabinFamily, fontWeight = FontWeight.Normal)}
-                )
-            }
-            Column(modifier= Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 8.dp),
-                horizontalAlignment = Alignment.Start){
-                Text(text = "Ciudad", modifier=Modifier.width(100.dp),
-                    color=Color(0xBC765532), fontSize = 17.sp)
-                OutlinedTextField(modifier=Modifier.fillMaxWidth(),
-                    value = state.city ,
-                    onValueChange = { viewModelA.inputProfileData(firstName = state.firstName, lastName = state.lastName, email = state.email, street = state.street, number = state.number, it, postalCode = state.postalCode, country= state.country, gender=state.gender) } ,
-                    label={Text("Ciudad",fontFamily = cabinFamily, fontWeight = FontWeight.Normal)}
-                )
-            }
-            Spacer(modifier = Modifier.size(5.dp))
-            Column(modifier= Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 8.dp),
-                horizontalAlignment = Alignment.Start){
-                Text(text = "Codigo postal", modifier=Modifier.width(100.dp),
-                    color=Color(0xBC765532), fontSize = 17.sp)
-                OutlinedTextField(modifier=Modifier.fillMaxWidth(),
-                    value = state.postalCode ,
-                    onValueChange = { viewModelA.inputProfileData(firstName = state.firstName, lastName = state.lastName, email = state.email, street = state.street, number = state.number, city = state.city, it, country= state.country, gender=state.gender) } ,
-                    label={Text("00706",fontFamily = cabinFamily, fontWeight = FontWeight.Normal)}
-                )
-            }
-            Spacer(modifier = Modifier.size(5.dp))
-            Column(modifier= Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 8.dp),
-                horizontalAlignment = Alignment.Start){
-                Text(text = "Pais", modifier=Modifier.width(100.dp),
-                    color=Color(0xBC765532), fontSize = 17.sp)
-                OutlinedTextField(modifier=Modifier.fillMaxWidth(),
-                    value = state.country ,
-                    onValueChange = { viewModelA.inputProfileData(firstName = state.firstName, lastName = state.lastName, email = state.email, street = state.street, number = state.number, city = state.city, postalCode = state.postalCode, it, gender=state.gender) } ,
-                    label={Text("Pais",fontFamily = cabinFamily, fontWeight = FontWeight.Normal)}
-                )
-            }
-            Spacer(modifier = Modifier.size(5.dp))
-            Column(modifier= Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 8.dp),
-                horizontalAlignment = Alignment.Start){
-                Text(text = "Genero", modifier=Modifier.width(100.dp),
-                    color=Color(0xBC765532), fontSize = 17.sp)
-                OutlinedTextField(modifier=Modifier.fillMaxWidth(),
-                    value = state.gender ,
-                    onValueChange = { viewModelA.inputProfileData(firstName = state.firstName, lastName = state.lastName, email = state.email, street = state.street, number = state.number, city = state.city, postalCode = state.postalCode, country= state.country, it) } ,
-                    label={
-                        Text("Genero",fontFamily = cabinFamily, fontWeight = FontWeight.Normal)}
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    GenderOption(
+                        selected = state.gender == "MALE",
+                        label = "Masculino",
+                        onClick = { viewModelA.inputProfileData(state.firstName, state.lastName, state.email, state.street, state.number, state.city, state.postalCode, state.country, "MALE") }
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    GenderOption(
+                        selected = state.gender == "FEMALE",
+                        label = "Femenino",
+                        onClick = { viewModelA.inputProfileData(state.firstName, state.lastName, state.email, state.street, state.number, state.city, state.postalCode, state.country, "FEMALE") }
+                    )
+                }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ProfileTextField(
+    label: String,
+    value: String,
+    placeholder: String? = null,
+    onValueChange: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            text = label,
+            color = Color(0xBC765532),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
+        )
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = placeholder?.let {
+                { Text(text = it, fontFamily = cabinFamily) }
+            },
+            shape = RoundedCornerShape(8.dp)
+        )
+    }
+}
+
+@Composable
+private fun ProfileItem(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = label,
+            fontSize = 16.sp,
+            color = Color(0xBC765532),
+            fontWeight = FontWeight.Medium
+        )
+        Text(
+            text = value,
+            fontSize = 16.sp,
+            color = Color(0xBC765532)
+        )
+    }
+}
+
+@Composable
+private fun GenderOption(
+    selected: Boolean,
+    label: String,
+    onClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.height(48.dp)
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = onClick,
+            colors = RadioButtonDefaults.colors(
+                selectedColor = Color(0xBC765532),
+                unselectedColor = Color(0xFFDDC8BE)
+            )
+        )
+        Text(
+            text = label,
+            modifier = Modifier.padding(start = 8.dp),
+            color = Color(0xBC765532)
+        )
     }
 }

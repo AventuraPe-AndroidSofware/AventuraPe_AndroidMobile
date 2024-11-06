@@ -2,10 +2,13 @@ package com.example.aventurape_androidmobile.navigation
 
 import AccountInformationA
 import HomeAdventurerScreen
+import AccountInformationE
 import PreferenceManager
+import StaticsEntrepreneurScreen
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -21,9 +24,7 @@ import com.example.aventurape_androidmobile.domains.adventurer.viewModels.Profil
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.LoginViewModel
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.SignUpViewModel
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AccountEntrepreneur
-import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AccountInformationE
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.AppPublicationManagement
-import com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens.StaticsEntrepreneurScreen
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.viewModels.ProfileViewModelE
 import com.example.aventurape_androidmobile.shared.screens.ErrorScreen
 
@@ -91,7 +92,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
         }
         composable(NavScreenAdventurer.account_infomation_adventurer_screen.name) { //PROFILE
             if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
-                AccountInformationA(navController = navController, viewModelA = profileViewModelA)
+                AccountInformationA(navController = navController, viewModelA = profileViewModelA, userId = PreferenceManager.getUserId(context))
             } else {
                 // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)
@@ -99,7 +100,8 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
         }
         composable(NavScreenAdventurer.favorite_publication_adventurer_screen.name) { //FAV PUBLICATIONS
             if (userRole != null && userRole!!.contains(Roles.ROLE_ADVENTUROUS.name)) {
-                FavoritePublicationsAdventurerScreen(navController = navController)
+                Log.d("FavoritePublications", "Entered FavoritePublicationsAdventurerScreen")
+                FavoritePublicationsAdventurerScreen(navController = navController, profileId = PreferenceManager.getUserId(context))
             } else {
                 // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)
@@ -108,19 +110,18 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
 
         // Detalle de aventura
         composable("detail_adventure/{adventureId}") { backStackEntry ->
-            val adventureId = backStackEntry.arguments?.getString("adventureId")?.toLongOrNull()
-            Log.d("AventureId", "detail_adventure/${adventureId}")  // Agrega esta línea
-            Log.d("List Adventures", adventureViewModel.listaAdventures.toString())
-            val adventure = adventureViewModel.listaAdventures.find { it.Id == adventureId }
-            adventure?.let { adventureDetail ->
-                DetailView(navController = navController, adventure = adventureDetail)
-            } ?: run {
-                println("Adventure not found for ID: $adventureId")  // Agrega esta línea
-                // Aquí puedes manejar el caso en que no se encuentra la aventura
-            }
+        val adventureId = backStackEntry.arguments?.getString("adventureId")?.toLongOrNull()
+        Log.d("AventureId", "detail_adventure/${adventureId}")  // Agrega esta línea
+        Log.d("List Adventures", adventureViewModel.listaAdventures.toString())
+        val adventure = adventureViewModel.listaAdventures.find { it.Id == adventureId }
+        adventure?.let { adventureDetail ->
+            DetailView(navController = navController, adventure = adventureDetail, viewModel = adventureViewModel)
+        } ?: run {
+            println("Adventure not found for ID: $adventureId")
         }
+    }
 
-//------enterpreneur screens
+        //------enterpreneur screens
         composable(NavScreenAdventurer.adventure_publication_management.name) { //homescreen
             userRole = PreferenceManager.getUserRoles(context);
             if(userRole != null){
@@ -135,7 +136,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
         }
         composable(NavScreenAdventurer.statics_entrepreneur_screen.name) {  //ESTADISTICAS
             if (userRole != null && userRole!!.contains(Roles.ROLE_ENTREPRENEUR.name)) {
-                StaticsEntrepreneurScreen()
+                StaticsEntrepreneurScreen(context = LocalContext.current)
             } else {
                 // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)
@@ -151,7 +152,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
         }
         composable(NavScreenAdventurer.account_infomation_entrepreneur_screen.name) { //PROFILE
             if (userRole != null && userRole!!.contains(Roles.ROLE_ENTREPRENEUR.name)) {
-                AccountInformationE(navController = navController, viewModelE = profileViewModelE)
+                AccountInformationE(navController = navController, viewModelE = profileViewModelE,userId = PreferenceManager.getUserId(context))
             } else {
                 // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)

@@ -4,15 +4,33 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.aventurape_androidmobile.domains.adventurer.states.ProfileStateA
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.models.ProfileE
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.states.ProfileStateE
 import com.example.aventurape_androidmobile.utils.RetrofitClient
 import com.example.aventurape_androidmobile.utils.models.UserRequestProfileE
+import com.example.aventurape_androidmobile.utils.models.UserResponseProfileA
+import com.example.aventurape_androidmobile.utils.models.UserResponseProfileE
+import kotlinx.coroutines.launch
 
 class ProfileViewModelE(): ViewModel() {
     var state by mutableStateOf(ProfileStateE())
         private set
     var profileECompleted: ProfileE = ProfileE()
+    var profileExists by mutableStateOf(false)
+
+    fun checkProfileExists(userId: Long) {
+        viewModelScope.launch {
+            val response = RetrofitClient.placeholder.getProfileByUserIdE(userId)
+            if (response.isSuccessful && response.body() != null) {
+                state = mapUserResponseToProfileState(response.body()!!)
+                profileExists = true
+            } else {
+                profileExists = false
+            }
+        }
+    }
 
     fun inputProfileData(
         nameEntrepreneurship: String,
@@ -67,5 +85,12 @@ class ProfileViewModelE(): ViewModel() {
                 profileECompletedError = "Error al completar el perfil."
             )
         }
+    }
+    private fun mapUserResponseToProfileState(userResponse: UserResponseProfileE): ProfileStateE {
+        return ProfileStateE(
+            nameEntrepreneurship = userResponse.name,
+            emailAddress =userResponse.email,
+            addressCity=userResponse.streetAddress
+        )
     }
 }

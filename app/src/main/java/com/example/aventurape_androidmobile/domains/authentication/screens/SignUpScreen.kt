@@ -56,21 +56,10 @@ fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController) {
     LaunchedEffect(state.signupSuccess) {
         if (state.signupSuccess) {
             viewModel.resetRole()
-            // Obtener el rol del usuario desde el ViewModel o directamente desde PreferenceManager
-            val userRole = PreferenceManager.getUserRoles(context)
-            when {
-                userRole != null && userRole.contains("ROLE_ADVENTUROUS") -> {
-                    navController.navigate(NavScreenAdventurer.home_adventurer_screen.name)
-                }
-                userRole != null && userRole.contains("ROLE_ENTREPRENEUR") -> {
-                    navController.navigate(NavScreenAdventurer.adventure_publication_management.name)
-                }
-                else -> {
-                    navController.navigate(NavScreenAdventurer.error_screen.name)
-                }
-            }
+            navController.navigate(NavScreenAdventurer.login_screen.name)
         }
     }
+
 
     Column(
         modifier = Modifier.fillMaxSize(),
