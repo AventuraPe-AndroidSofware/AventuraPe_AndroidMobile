@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import coil.compose.rememberImagePainter
 import com.example.aventurape_androidmobile.domains.adventurer.models.Adventure
 import androidx.compose.ui.res.stringResource
+import com.example.aventurape_androidmobile.domains.adventurer.models.ProfileEntrepreneur
 
 @Composable
 fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavController) {
@@ -29,11 +30,12 @@ fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavC
 
     LaunchedEffect(Unit) {
         viewModel.loadActivities()
+        viewModel.loadEntrepreneurs() // Cargar los emprendedores
     }
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -46,7 +48,7 @@ fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavC
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         } else {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(25.dp))
             // Título "Posts"
             Text(
                 text = "Posts",
@@ -68,10 +70,31 @@ fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavC
                 }
             }
 
-            // Espacio entre la lista y el botón
+            Spacer(modifier = Modifier.height(25.dp))
+
+            // Título "Perfiles de Emprendedores"
+            Text(
+                text = "Perfiles de Emprendedores",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            )
+            // Lista horizontal de perfiles de emprendedores
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(state.entrepreneurs) { entrepreneur ->
+                    EntrepreneurCard(entrepreneur = entrepreneur)
+                }
+            }
+
             Spacer(modifier = Modifier.weight(1f))
             Text(text = "¿Estás listo para dejarte llevar?")
-            // Botón "SORPRÉNDEME"
             Button(
                 onClick = { /* Acción para el botón */ },
                 modifier = Modifier
@@ -113,6 +136,33 @@ fun AdventureCard(adventure: Adventure) {
                 Text(text = "Duration: ${adventure.timeDuration} mins", style = MaterialTheme.typography.labelSmall)
                 Text(text = "Cost: ${adventure.cost}", style = MaterialTheme.typography.labelSmall)
             }
+        }
+    }
+}
+
+@Composable
+fun EntrepreneurCard(entrepreneur: ProfileEntrepreneur) {
+    Card(
+        modifier = Modifier
+            .width(150.dp)
+            .height(200.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Image(
+                painter = rememberImagePainter(data = entrepreneur.imageUrl),
+                contentDescription = "Entrepreneur Image",
+                modifier = Modifier
+                    .size(100.dp)
+                    .padding(8.dp),
+                contentScale = ContentScale.Crop
+            )
+            Text(text = entrepreneur.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(text = entrepreneur.email, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
         }
     }
 }

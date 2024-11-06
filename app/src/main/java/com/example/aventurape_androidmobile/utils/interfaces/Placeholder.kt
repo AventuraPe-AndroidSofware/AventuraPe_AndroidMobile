@@ -5,6 +5,7 @@ import com.example.aventurape_androidmobile.utils.models.PublicationRequest
 import com.example.aventurape_androidmobile.utils.models.PublicationResponse
 import com.example.aventurape_androidmobile.domains.adventurer.models.Comment
 import com.example.aventurape_androidmobile.domains.adventurer.models.Review
+import com.example.aventurape_androidmobile.utils.models.ProfileEntrepreneurResponse
 import com.example.aventurape_androidmobile.utils.models.UserRequestProfileA
 import com.example.aventurape_androidmobile.utils.models.UserRequestProfileE
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignIn
@@ -70,5 +71,6 @@ interface Placeholder {
     @POST("profiles/entrepreneur")
     suspend fun saveProfileE(@Body request: UserRequestProfileE):Response<UserResponseProfileE>
 
-
+    @GET("profiles/entrepreneur")
+    suspend fun getAllProfilesEntrepreneur():Response<List<ProfileEntrepreneurResponse>>
 }
