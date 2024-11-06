@@ -7,6 +7,7 @@ import com.example.aventurape_androidmobile.domains.adventurer.models.Comment
 import com.example.aventurape_androidmobile.domains.adventurer.models.Review
 import com.example.aventurape_androidmobile.utils.models.FavoritePublicationRequest
 import com.example.aventurape_androidmobile.utils.models.FavoritePublicationResponse
+import com.example.aventurape_androidmobile.utils.models.PublicationByOrderResponse
 import com.example.aventurape_androidmobile.utils.models.UserRequestProfileA
 import com.example.aventurape_androidmobile.utils.models.UserRequestProfileE
 import com.example.aventurape_androidmobile.utils.models.UserRequestSignIn
@@ -19,10 +20,10 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface Placeholder {
     @POST("authentication/sign-up")
@@ -114,5 +115,14 @@ interface Placeholder {
     //ALL USERS
     @GET("users")
     suspend fun getUsers(): Response<List<UserRolesResponse>>
+
+    //OrderByRating
+    @GET("publication/order-by-rating/{entrepreneurId}")
+    suspend fun getFavoritePublicationsByProfileIdOrderedByRating(
+        @Path("entrepreneurId") entrepreneurId: Long
+    ): Response<List<PublicationByOrderResponse>>
+
+
+
 
 }

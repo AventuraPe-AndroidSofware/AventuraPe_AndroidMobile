@@ -72,6 +72,7 @@ fun DetailView(navController: NavController, adventure: Adventure, viewModel: Ad
                 .clickable { navController.popBackStack() }
                 .padding(8.dp)
         )
+
         // Nombre de la actividad
         Text(
             text = adventure.nameActivity,
@@ -81,6 +82,7 @@ fun DetailView(navController: NavController, adventure: Adventure, viewModel: Ad
             color = Color.Black,
             modifier = Modifier.padding(vertical = 8.dp)
         )
+
         // Imagen principal con fondo color claro y bordes redondeados
         Box(
             modifier = Modifier
@@ -109,7 +111,7 @@ fun DetailView(navController: NavController, adventure: Adventure, viewModel: Ad
             modifier = Modifier.padding(vertical = 8.dp)
         )
         Text(
-            text = "Tiempo de duración: ${adventure.timeDuration}",
+            text = "Tiempo de duración: ${adventure.timeDuration} h",
             fontSize = 19.sp,
             fontFamily = cabinFamily,
             color = Color.Black,
@@ -125,7 +127,7 @@ fun DetailView(navController: NavController, adventure: Adventure, viewModel: Ad
             modifier = Modifier.padding(vertical = 4.dp)
         )
         Text(
-            text = "Costo: ${adventure.cost}",
+            text = "Costo: S/ ${adventure.cost} ",
             fontSize = 19.sp,
             fontFamily = cabinFamily,
             color = Color.Black,
@@ -147,13 +149,13 @@ fun DetailView(navController: NavController, adventure: Adventure, viewModel: Ad
                 tint = Color(0xFFE8A63D),
                 modifier = Modifier.size(32.dp)
             )
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "Calificar esta actividad",
+                text = "Califica esta actividad",
                 fontSize = 19.sp,
                 fontFamily = cabinFamily,
                 color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 8.dp)
+                fontWeight = FontWeight.Bold
             )
         }
 
@@ -198,13 +200,13 @@ fun DetailView(navController: NavController, adventure: Adventure, viewModel: Ad
                 tint = Color.Gray,
                 modifier = Modifier.size(24.dp)
             )
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "Comentarios",
                 fontSize = 16.sp,
                 fontFamily = cabinFamily,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.padding(start = 8.dp)
+                color = Color.Black
             )
         }
 
@@ -236,6 +238,7 @@ fun DetailView(navController: NavController, adventure: Adventure, viewModel: Ad
             )
         }
         Spacer(modifier = Modifier.height(18.dp))
+
         // Botón de enviar comentario
         Button(
             onClick = {
