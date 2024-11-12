@@ -66,6 +66,7 @@ dependencies {
     implementation (libs.androidx.activity.compose.v131)
     implementation ("androidx.compose.ui:ui:1.7.5")
     implementation ("androidx.compose.material3:material3:1.3.1")
+    implementation(libs.coil.kt.coil.compose)
     implementation (libs.androidx.lifecycle.runtime.ktx.v231)
     implementation (libs.retrofit2.kotlin.coroutines.adapter)
     implementation(libs.androidx.core.ktx)

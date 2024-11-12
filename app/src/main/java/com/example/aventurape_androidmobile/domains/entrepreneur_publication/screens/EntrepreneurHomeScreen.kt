@@ -72,6 +72,9 @@ fun AppPublicationManagement(navController: NavController, entrepreneurId: Long)
     val viewModel = remember { PublicationViewModel() }
     val snackbarHostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(Unit) {
+        viewModel.getPublications(entrepreneurId)
+    }
 
     Column(
         modifier = Modifier
@@ -166,6 +169,150 @@ fun AppPublicationManagement(navController: NavController, entrepreneurId: Long)
     }
 }
 
+@Composable
+fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long, navController: NavController) {
+    val publications by viewModel.publications
+    val snackbarHostState = remember { SnackbarHostState() }
+    val showEditForm = remember { mutableStateOf(false) }
+    var selectedPublication by remember { mutableStateOf<PublicationResponse?>(null) }
+
+    SnackbarHost(hostState = snackbarHostState)
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        items(publications) { publication ->
+            Card(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(8.dp),
+                border = BorderStroke(1.dp, Color(0xFFA6A2A2)),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Column {
+                    Box(
+                        modifier = Modifier
+                            .padding(16.dp, 16.dp, 16.dp, 0.dp)
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(publication.image)
+                                .build(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(350.dp, 200.dp)
+                                .fillMaxWidth(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "Nombre: ",
+                            fontFamily = cabinFamily,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 0.dp)
+                        )
+                        Text(
+                            text = publication.nameActivity,
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(0.dp, 5.dp, 2.dp, 4.dp)
+                        )
+                        Text(
+                            text = "Descripción: ",
+                            fontFamily = cabinFamily,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 0.dp)
+                        )
+                        Text(
+                            text = publication.description,
+                            fontFamily = cabinFamily,
+                            fontSize = 16.sp,
+                            color = Color(0xFF000000),
+                            modifier = Modifier.padding(0.dp, 5.dp, 2.dp, 10.dp)
+                        )
+
+                        Row {
+                            Text(
+                                text = "Cant.Personas: ",
+                                fontFamily = cabinFamily,
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF000000),
+                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
+                            )
+                            Text(
+                                text = publication.cantPeople.toString(),
+                                fontFamily = cabinFamily,
+                                fontSize = 16.sp,
+                                color = Color(0xFF000000),
+                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
+                            )
+                        }
+
+                        // Row for Edit and Delete Buttons
+                        Row(
+                            modifier = Modifier.padding(top = 8.dp)
+                        ) {
+                            // Edit Button
+                            TextButton(
+                                onClick = {
+                                    selectedPublication = publication
+                                    showEditForm.value = true
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.White,
+                                    containerColor = Color(0xFFE8A63D)
+                                ),
+                                modifier = Modifier.padding(end = 8.dp)
+                            ) {
+                                Text(text = "Editar",
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = cabinFamily,
+                                    fontSize = 16.sp)
+                            }
+
+                            // Delete Button
+                            TextButton(
+                                onClick = {
+                                    viewModel.deletePublication(publication.Id, entrepreneurId) {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            snackbarHostState.showSnackbar("Publicación eliminada correctamente")
+                                        }
+                                    }
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.White,
+                                    containerColor = Color(0xFFA61B1B)
+                                )
+                            ) {
+                                Text(text = "Eliminar",
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = cabinFamily,
+                                    fontSize = 16.sp)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (showEditForm.value && selectedPublication != null) {
+        FormEditActivity(viewModel, navController, entrepreneurId, selectedPublication!!) {
+            showEditForm.value = false
+            viewModel.getPublications(entrepreneurId)
+        }
+    }
+}
 @Composable
 fun FormActivity(viewModel: PublicationViewModel, navController: NavController, entrepreneurId: Long) {
     var showDialogDatos by remember { mutableStateOf(true) }
@@ -339,155 +486,6 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
         )
     }
 }
-@Composable
-fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long, navController: NavController) {
-    val publications by viewModel.publications
-    val snackbarHostState = remember { SnackbarHostState() }
-    val showEditForm = remember { mutableStateOf(false) }
-    var selectedPublication by remember { mutableStateOf<PublicationResponse?>(null) }
-
-    SnackbarHost(hostState = snackbarHostState)
-
-    LaunchedEffect(Unit) {
-        viewModel.getPublications(entrepreneurId)
-    }
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        items(publications) { publication ->
-            Card(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(8.dp),
-                border = BorderStroke(1.dp, Color(0xFFA6A2A2)),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Column {
-                    Box(
-                        modifier = Modifier
-                            .padding(16.dp, 16.dp, 16.dp, 0.dp)
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                    ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(publication.image)
-                                .build(),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(350.dp, 200.dp)
-                                .fillMaxWidth(),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = "Nombre: ",
-                            fontFamily = cabinFamily,
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF000000),
-                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 0.dp)
-                        )
-                        Text(
-                            text = publication.nameActivity,
-                            fontFamily = cabinFamily,
-                            fontSize = 16.sp,
-                            color = Color(0xFF000000),
-                            modifier = Modifier.padding(0.dp, 5.dp, 2.dp, 4.dp)
-                        )
-                        Text(
-                            text = "Descripción: ",
-                            fontFamily = cabinFamily,
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF000000),
-                            modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 0.dp)
-                        )
-                        Text(
-                            text = publication.description,
-                            fontFamily = cabinFamily,
-                            fontSize = 16.sp,
-                            color = Color(0xFF000000),
-                            modifier = Modifier.padding(0.dp, 5.dp, 2.dp, 10.dp)
-                        )
-
-                        Row {
-                            Text(
-                                text = "Cant.Personas: ",
-                                fontFamily = cabinFamily,
-                                fontSize = 17.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF000000),
-                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
-                            )
-                            Text(
-                                text = publication.cantPeople.toString(),
-                                fontFamily = cabinFamily,
-                                fontSize = 16.sp,
-                                color = Color(0xFF000000),
-                                modifier = Modifier.padding(2.dp, 5.dp, 2.dp, 5.dp)
-                            )
-                        }
-
-                        // Row for Edit and Delete Buttons
-                        Row(
-                            modifier = Modifier.padding(top = 8.dp)
-                        ) {
-                            // Edit Button
-                            TextButton(
-                                onClick = {
-                                    selectedPublication = publication
-                                    showEditForm.value = true
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = Color.White,
-                                    containerColor = Color(0xFFE8A63D)
-                                ),
-                                modifier = Modifier.padding(end = 8.dp)
-                            ) {
-                                Text(text = "Editar",
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = cabinFamily,
-                                    fontSize = 16.sp)
-                            }
-
-                            // Delete Button
-                            TextButton(
-                                onClick = {
-                                    viewModel.deletePublication(publication.Id, entrepreneurId) {
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            snackbarHostState.showSnackbar("Publicación eliminada correctamente")
-                                        }
-                                    }
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = Color.White,
-                                    containerColor = Color(0xFFA61B1B)
-                                )
-                            ) {
-                                Text(text = "Eliminar",
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = cabinFamily,
-                                    fontSize = 16.sp)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    if (showEditForm.value && selectedPublication != null) {
-        FormEditActivity(viewModel, navController, entrepreneurId, selectedPublication!!) {
-            showEditForm.value = false
-            viewModel.getPublications(entrepreneurId)
-        }
-    }
-}
-
 @Composable
 fun FormEditActivity(
     viewModel: PublicationViewModel,

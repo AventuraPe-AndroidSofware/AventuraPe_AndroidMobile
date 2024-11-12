@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,7 @@ import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
 
 @Composable
 fun AccountAdventurer(navController: NavHostController, username: String?){
+    val context= LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -85,11 +87,12 @@ fun AccountAdventurer(navController: NavHostController, username: String?){
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        /// Logout Button
+        // Logout Button
         Button(
             onClick = {
+                PreferenceManager.clearUser(context)
                 navController.navigate(NavScreenAdventurer.login_screen.name) {
-                    popUpTo(NavScreenAdventurer.home_adventurer_screen.name) { inclusive = true }
+                    popUpTo(NavScreenAdventurer.login_screen.name) { inclusive = true }
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF765532)),

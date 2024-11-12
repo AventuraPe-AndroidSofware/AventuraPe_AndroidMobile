@@ -3,7 +3,6 @@ import android.content.SharedPreferences
 import android.util.Log
 
 object PreferenceManager {
-
     private const val PREFERENCES_FILE_KEY = "com.example.aventurape_androidmobile.PREFERENCE_FILE_KEY"
     private const val USER_ID_KEY = "user_id"
     private const val USERNAME_KEY = "username"
@@ -49,7 +48,7 @@ object PreferenceManager {
     fun clearUser(context: Context) {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
-            clear() // Elimina todos los datos guardados en SharedPreferences
+            clear()
             apply()
         }
     }
