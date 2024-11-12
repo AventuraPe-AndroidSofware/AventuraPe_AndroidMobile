@@ -61,10 +61,13 @@ dependencies {
     implementation ("androidx.navigation:navigation-compose:2.5.3")
 
     //Refresh
-    implementation ("com.google.accompanist:accompanist-swiperefresh:0.24.13-rc")
+    implementation (libs.accompanist.swiperefresh)
 
-
-    implementation ("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
+    implementation (libs.androidx.activity.compose.v131)
+    implementation ("androidx.compose.ui:ui:1.7.5")
+    implementation ("androidx.compose.material3:material3:1.3.1")
+    implementation (libs.androidx.lifecycle.runtime.ktx.v231)
+    implementation (libs.retrofit2.kotlin.coroutines.adapter)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

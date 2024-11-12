@@ -1,5 +1,8 @@
 package com.example.aventurape_androidmobile.domains.entrepreneur_publication.screens
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -19,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -26,6 +30,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
@@ -172,6 +177,13 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
     var costo by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            foto = it.toString()
+        }
+    }
+
     SnackbarHost(hostState = snackbarHostState)
 
     if (showDialogDatos) {
@@ -289,6 +301,11 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
                             placeholder = { Text(text="Insertar foto",
                                 fontFamily = cabinFamily)  },
                             modifier = Modifier.padding(2.dp, 0.dp, 2.dp, 3.dp),
+                            trailingIcon = {
+                                IconButton(onClick = { launcher.launch("image/*") }) {
+                                    Icon(imageVector = Icons.Outlined.Add, contentDescription = "Select Image")
+                                }
+                            }
                         )
                     }
                     item {
@@ -322,7 +339,6 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
         )
     }
 }
-
 @Composable
 fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long, navController: NavController) {
     val publications by viewModel.publications
