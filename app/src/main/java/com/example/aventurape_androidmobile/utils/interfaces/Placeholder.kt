@@ -5,7 +5,7 @@ import com.example.aventurape_androidmobile.utils.models.PublicationRequest
 import com.example.aventurape_androidmobile.utils.models.PublicationResponse
 import com.example.aventurape_androidmobile.domains.adventurer.models.Comment
 import com.example.aventurape_androidmobile.domains.adventurer.models.Review
-import com.example.aventurape_androidmobile.utils.models.ProfileEntrepreneurResponse
+import com.example.aventurape_androidmobile.domains.entrepreneur_publication.models.ProfileE
 import com.example.aventurape_androidmobile.utils.models.FavoritePublicationRequest
 import com.example.aventurape_androidmobile.utils.models.FavoritePublicationResponse
 import com.example.aventurape_androidmobile.utils.models.PublicationByOrderResponse
@@ -109,7 +109,7 @@ interface Placeholder {
     suspend fun saveProfileE(@Body request: UserRequestProfileE):Response<UserResponseProfileE>
 
     @GET("profiles/entrepreneur")
-    suspend fun getAllProfilesEntrepreneur():Response<List<ProfileEntrepreneurResponse>>
+    suspend fun getAllProfilesEntrepreneur():Response<List<ProfileE>>
     @GET("profiles/adventurer/user/{userId}")
     suspend fun getProfileByUserIdA(@Path("userId") userId: Long): Response<UserResponseProfileA>
 

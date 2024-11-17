@@ -99,7 +99,6 @@ private fun DisplayProfile(state: ProfileStateE) {
         ) {
             ProfileItem("Nombre de la empresa", state.nameEntrepreneurship)
             Divider(color = Color(0xFFEEE6E0))
-
             ProfileItem("Ciudad", state.addressCity)
             ProfileItem("País", state.addressCountry)
             ProfileItem("Dirección", state.addressStreet)

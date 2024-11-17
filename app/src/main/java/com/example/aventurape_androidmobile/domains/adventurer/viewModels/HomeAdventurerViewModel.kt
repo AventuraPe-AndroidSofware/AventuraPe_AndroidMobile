@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.aventurape_androidmobile.domains.adventurer.models.ProfileEntrepreneur
 import com.example.aventurape_androidmobile.domains.adventurer.states.HomeAdventurerState
+import com.example.aventurape_androidmobile.domains.entrepreneur_publication.models.ProfileE
 import com.example.aventurape_androidmobile.utils.RetrofitClient
 import kotlinx.coroutines.launch
 
@@ -39,9 +39,9 @@ class HomeAdventurerViewModel : ViewModel() {
                 val response = RetrofitClient.placeholder.getAllProfilesEntrepreneur()
                 if (response.isSuccessful) {
                     val entrepreneursResponse = response.body() ?: emptyList()
-                    // Mapea ProfileEntrepreneurResponse a ProfileEntrepreneur
+                    // Mapea ProfileEntrepreneurResponse a ProfileE
                     val entrepreneurs = entrepreneursResponse.map { responseItem ->
-                        ProfileEntrepreneur(
+                        ProfileE(
                             id = responseItem.id,
                             userId = responseItem.userId,
                             name = responseItem.name,

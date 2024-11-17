@@ -47,6 +47,8 @@ class ProfileViewModelA(): ViewModel() {
                 gender= profileResponse.gender,
                 email= profileResponse.email,
                 streetAddress = profileResponse.streetAddress
+
+
             )
             state= state.copy(profileCompletedSucces= true, profileACompleted= profileACompleted, profileCompletedError= null)
         }else {

@@ -75,9 +75,14 @@ class ProfileViewModelE(): ViewModel() {
             val profileResponse= responseE.body()!!
             val profileECompleted= ProfileE(
                 name = profileResponse.name,
-                email= profileResponse.email,
-                streetAddress = profileResponse.streetAddress
-            )
+                city = profileResponse.city,
+                country = profileResponse.country,
+                number = profileResponse.number,
+                postalCode = profileResponse.postalCode,
+                streetAddress = profileResponse.streetAddress,
+                email = profileResponse.emailAddress,
+
+                )
             state= state.copy(profileECompletedSucces = true, profileECompleted= profileECompleted, profileECompletedError= null)
         }else {
             state = state.copy(
@@ -89,8 +94,12 @@ class ProfileViewModelE(): ViewModel() {
     private fun mapUserResponseToProfileState(userResponse: UserResponseProfileE): ProfileStateE {
         return ProfileStateE(
             nameEntrepreneurship = userResponse.name,
-            emailAddress =userResponse.email,
-            addressCity=userResponse.streetAddress
+            addressCity = userResponse.city,
+            addressCountry = userResponse.country,
+            addressNumber = userResponse.number,
+            addressPostalCode = userResponse.postalCode,
+            addressStreet = userResponse.streetAddress,
+            emailAddress = userResponse.emailAddress,
         )
     }
 }

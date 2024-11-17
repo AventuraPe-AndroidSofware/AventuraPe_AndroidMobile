@@ -99,15 +99,10 @@ private fun DisplayProfile(state: ProfileStateA) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            ProfileItem("Nombre", state.firstName)
-            ProfileItem("Apellido", state.lastName)
+            ProfileItem("Nombre completo", state.firstName + " " + state.lastName)
             ProfileItem("Email", state.email)
             Divider(color = Color(0xFFEEE6E0))
             ProfileItem("Dirección", state.street)
-            ProfileItem("Numero", state.number)
-            ProfileItem("Ciudad", state.city)
-            ProfileItem("Codigo postal", state.postalCode)
-            ProfileItem("País", state.country)
             Divider(color = Color(0xFFEEE6E0))
             ProfileItem(
                 "Género",

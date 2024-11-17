@@ -35,57 +35,95 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.aventurape_androidmobile.R
 import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.ui.draw.clip
+
+// Definición de colores personalizados
+private val PrimaryBrown = Color(0xFF765532)
+private val LightBrown = Color(0xFFA67B4F)
+private val VeryLightBrown = Color(0xFFE6D5C7)
+private val BackgroundBrown = Color(0xFFF8F5F2)
 
 @Composable
-fun AccountAdventurer(navController: NavHostController, username: String?){
-    val context= LocalContext.current
+fun AccountAdventurer(navController: NavHostController, username: String?) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(BackgroundBrown)
             .padding(16.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+        // Profile Header
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            shape = RoundedCornerShape(16.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_user),
-                contentDescription = "User Avatar",
-                modifier = Modifier.size(57.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = username?:"Username",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium
-            )
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_user),
+                    contentDescription = "User Avatar",
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .background(VeryLightBrown)
+                        .padding(8.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = username ?: "Username",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = PrimaryBrown
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        // Menu Options
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Column(modifier = Modifier.padding(8.dp)) {
+                ProfileMenuItem(
+                    icon = Icons.Outlined.Person,
+                    title = "Información personal",
+                    tint = PrimaryBrown,
+                    onClick = {
+                        navController.navigate(NavScreenAdventurer.account_infomation_adventurer_screen.name)
+                    }
+                )
 
-        // Personal Information
-        ProfileMenuItem(
-            icon = Icons.Outlined.Person,
-            title = "Información personal",
-            tint = Color.Black,
-            onClick = {
-                navController.navigate(NavScreenAdventurer.account_infomation_adventurer_screen.name)
+                Divider(
+                    color = VeryLightBrown,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+
+                ProfileMenuItem(
+                    icon = Icons.Outlined.FavoriteBorder,
+                    title = "Publicaciones favoritas",
+                    tint = PrimaryBrown,
+                    onClick = {
+                        navController.navigate(NavScreenAdventurer.favorite_publication_adventurer_screen.name)
+                    }
+                )
             }
-        )
+        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Favorite Publications
-        ProfileMenuItem(
-            icon = Icons.Outlined.FavoriteBorder,
-            title = "Publicaciones favoritas",
-            tint = Color.Black,
-            onClick = {
-                navController.navigate(NavScreenAdventurer.favorite_publication_adventurer_screen.name)
-            }
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.weight(1f))
 
         // Logout Button
         Button(
@@ -95,37 +133,62 @@ fun AccountAdventurer(navController: NavHostController, username: String?){
                     popUpTo(NavScreenAdventurer.login_screen.name) { inclusive = true }
                 }
             },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF765532)),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            colors = ButtonDefaults.buttonColors(
+                containerColor = PrimaryBrown,
+                contentColor = Color.White
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            shape = RoundedCornerShape(12.dp),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
         ) {
-            Text("Cerrar sesión", color = Color.White)
+            Text(
+                "Cerrar sesión",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
         }
-
     }
 }
 
 @Composable
-fun ProfileMenuItem(icon: ImageVector, title: String, tint: Color = MaterialTheme.colorScheme.primary,onClick: () -> Unit) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+fun ProfileMenuItem(
+    icon: ImageVector,
+    title: String,
+    tint: Color = PrimaryBrown,
+    onClick: () -> Unit
+) {
+    Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
+            .clickable(onClick = onClick),
+        color = Color.White
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = tint
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = title,
-            fontSize = 16.sp,
-            modifier = Modifier.weight(1f)
-        )
-        Icon(
-            imageVector = Icons.Default.KeyboardArrowRight,
-            contentDescription = "Navigate"
-        )
+        Row(
+            modifier = Modifier
+                .padding(vertical = 12.dp, horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = tint,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = title,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black,
+                modifier = Modifier.weight(1f)
+            )
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowRight,
+                contentDescription = "Navigate",
+                tint = LightBrown
+            )
+        }
     }
 }
