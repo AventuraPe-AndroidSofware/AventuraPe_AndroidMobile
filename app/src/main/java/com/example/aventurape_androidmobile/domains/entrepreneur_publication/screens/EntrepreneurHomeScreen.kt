@@ -161,21 +161,46 @@ private fun TitleSection(onAddClick: () -> Unit) {
 @Composable
 fun CardPublications(viewModel: PublicationViewModel, entrepreneurId: Long, navController: NavController) {
     val publications by viewModel.publications
+    val snackbarHostState = remember { SnackbarHostState() }
+    val showEditForm = remember { mutableStateOf(false) }
+    var selectedPublication by remember { mutableStateOf<PublicationResponse?>(null) }
 
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF5F0EA))
     ) {
-        items(publications) { publication ->
-            PublicationCard(
-                publication = publication,
-                onEdit = {
-                    // Handle edit
-                },
-                onDelete = {
-                    viewModel.deletePublication(publication.Id, entrepreneurId) {}
-                }
-            )
+        SnackbarHost(hostState = snackbarHostState)
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(publications) { publication ->
+                PublicationCard(
+                    publication = publication,
+                    onEdit = {
+                        selectedPublication = publication
+                        showEditForm.value = true
+                    },
+                    onDelete = {
+                        viewModel.deletePublication(publication.Id, entrepreneurId) {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                snackbarHostState.showSnackbar("Publicación eliminada correctamente")
+                            }
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    if (showEditForm.value && selectedPublication != null) {
+        FormEditActivity(viewModel, navController, entrepreneurId, selectedPublication!!) {
+            showEditForm.value = false
+            viewModel.getPublications(entrepreneurId)
         }
     }
 }
@@ -258,7 +283,17 @@ private fun PublicationCard(
                             containerColor = LightBrown
                         )
                     ) {
-                        Text("Editar")
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            "Editar",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
                     }
 
                     Button(
@@ -268,7 +303,17 @@ private fun PublicationCard(
                             containerColor = Color(0xFFD32F2F)
                         )
                     ) {
-                        Text("Eliminar")
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            "Eliminar",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
                     }
                 }
             }
@@ -280,7 +325,7 @@ private fun PublicationCard(
 private fun DetailItem(icon: ImageVector, text: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(4.dp)
+        horizontalArrangement = Arrangement.Center
     ) {
         Icon(
             imageVector = icon,
@@ -292,10 +337,11 @@ private fun DetailItem(icon: ImageVector, text: String) {
         Text(
             text = text,
             fontSize = 14.sp,
-            color = DarkBrown
+            color = Color.DarkGray
         )
     }
 }
+
 
 // ... (FormActivity and FormEditActivity remain similar but with updated colors and styling)
 @Composable
