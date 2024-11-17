@@ -42,7 +42,6 @@ import androidx.compose.material3.*
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,6 +52,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
 fun FavoritePublicationsAdventurerScreen(navController: NavController, profileId: Long) {
@@ -65,11 +66,15 @@ fun FavoritePublicationsAdventurerScreen(navController: NavController, profileId
     LaunchedEffect(profileId) {
         viewModel.loadFavoriteAdventures(profileId)
     }
+    val primaryBrown = Color(0xFF765532)
+    val lightBrown = Color(0xFFA67B51)
+    val veryLightBrown = Color(0xFFE6D5C7)
+    val darkBrown = Color(0xFF503A22)
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
+            .background(veryLightBrown) // Fondo principal con color predominante
     ) {
         // Header
         Row(
@@ -81,13 +86,15 @@ fun FavoritePublicationsAdventurerScreen(navController: NavController, profileId
             IconButton(onClick = { navController.navigateUp() }) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
+                    tint = darkBrown // Color de icono más claro
                 )
             }
             Text(
                 text = "Tus mejores aventuras",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = darkBrown, // Texto del título con un color claro
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
@@ -107,16 +114,16 @@ fun FavoritePublicationsAdventurerScreen(navController: NavController, profileId
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(240.dp), // Increased height to accommodate buttons
+                            .height(280.dp)
+                            .clip(MaterialTheme.shapes.medium),
                         colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFFFFE4C4)
+                            containerColor = Color.White
                         ),
                         elevation = CardDefaults.cardElevation(
-                            defaultElevation = 2.dp
+                            defaultElevation = 4.dp
                         )
                     ) {
                         Box(modifier = Modifier.fillMaxSize()) {
-                            // Image
                             AsyncImage(
                                 model = ImageRequest.Builder(LocalContext.current)
                                     .data(adventure.image)
@@ -124,27 +131,72 @@ fun FavoritePublicationsAdventurerScreen(navController: NavController, profileId
                                     .build(),
                                 contentDescription = adventure.nameActivity,
                                 modifier = Modifier
-                                    .size(350.dp, 200.dp)
-                                    .fillMaxWidth(),
+                                    .fillMaxWidth()
+                                    .height(200.dp),
                                 contentScale = ContentScale.Crop
                             )
 
-                            // Buttons row at the bottom
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                                    .background(
+                                        Brush.verticalGradient(
+                                            colors = listOf(
+                                                Color.Transparent,
+                                                darkBrown.copy(alpha = 0.8f)
+                                            ),
+                                            startY = 100f
+                                        )
+                                    )
+                            )
+
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.BottomStart)
+                                    .padding(16.dp)
+                            ) {
+                                Text(
+                                    text = adventure.nameActivity,
+                                    color = Color.White,
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                ) {
+                                    Text(
+                                        text = "S/ ${adventure.cost}",
+                                        color = veryLightBrown,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                }
+                            }
+
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .align(Alignment.BottomCenter)
-                                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 Button(
-                                    onClick = { navController.navigate("detail_adventure/${adventure.Id}")},
+                                    onClick = { navController.navigate("detail_adventure/${adventure.Id}") },
+                                    modifier = Modifier.weight(1f),
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFFE8A63D)
+                                        containerColor = primaryBrown
                                     ),
-                                    modifier = Modifier.weight(1f).padding(end = 8.dp)
+                                    elevation = ButtonDefaults.buttonElevation(
+                                        defaultElevation = 2.dp
+                                    )
                                 ) {
-                                    Text(text = "Detalle", color = Color.White)
+                                    Text(
+                                        text = "Ver Detalle",
+                                        fontWeight = FontWeight.Medium
+                                    )
                                 }
 
                                 Button(
@@ -162,44 +214,17 @@ fun FavoritePublicationsAdventurerScreen(navController: NavController, profileId
                                             }
                                         }
                                     },
+                                    modifier = Modifier.weight(1f),
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Red
+                                        containerColor = Color.Red.copy(alpha = 0.8f)
                                     ),
-                                    modifier = Modifier.weight(1f).padding(start = 8.dp)
-                                ) {
-                                    Text(text = "Eliminar", color = Color.White)
-                                }
-                            }
-
-                            // Gradient and title overlay
-                            Box(
-                                modifier = Modifier
-                                    .height(180.dp)
-                                    .fillMaxWidth()
-                                    .background(
-                                        Brush.verticalGradient(
-                                            colors = listOf(
-                                                Color.Transparent,
-                                                Color.Black.copy(alpha = 0.7f)
-                                            )
-                                        )
+                                    elevation = ButtonDefaults.buttonElevation(
+                                        defaultElevation = 2.dp
                                     )
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.BottomStart)
-                                        .padding(16.dp)
                                 ) {
                                     Text(
-                                        text = adventure.nameActivity,
-                                        color = Color.White,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        text = "S/ ${adventure.cost}",
-                                        color = Color.White,
-                                        fontSize = 14.sp
+                                        text = "Eliminar",
+                                        fontWeight = FontWeight.Medium
                                     )
                                 }
                             }

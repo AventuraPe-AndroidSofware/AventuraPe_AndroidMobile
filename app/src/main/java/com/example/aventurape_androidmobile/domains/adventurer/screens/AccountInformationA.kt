@@ -40,6 +40,7 @@ fun AccountInformationA(
         }
     }
 
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFFFAF6F3)
@@ -50,6 +51,7 @@ fun AccountInformationA(
                 .verticalScroll(scrollState)
                 .padding(16.dp)
         ) {
+
             // Header
             Card(
                 modifier = Modifier
