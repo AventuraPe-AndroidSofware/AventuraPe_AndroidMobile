@@ -1,8 +1,10 @@
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.HomeAdventurerViewModel
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -12,17 +14,24 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import coil.compose.rememberImagePainter
 import com.example.aventurape_androidmobile.domains.adventurer.models.Adventure
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import com.example.aventurape_androidmobile.R
 import com.example.aventurape_androidmobile.domains.adventurer.models.ProfileEntrepreneur
+import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 
 @Composable
 fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavController) {
@@ -36,7 +45,7 @@ fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavC
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(15.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (state.isLoading) {
@@ -48,38 +57,43 @@ fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavC
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         } else {
-            Spacer(modifier = Modifier.height(25.dp))
-            // Título "Posts"
-            Text(
-                text = "Posts",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            )
-            // Lista de publicaciones
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                items(state.activities) { adventure ->
-                    AdventureCard(adventure = adventure)
-                }
+                Image(
+                    painter = painterResource(id = R.drawable.aventurapelogo),
+                    contentDescription = "Logo AventuraPe",
+                    modifier = Modifier
+                        .size(width = 150.dp, height = 100.dp)
+                        .padding(10.dp, 0.dp, 0.dp, 0.dp)
+                )
             }
 
-            Spacer(modifier = Modifier.height(25.dp))
+            Box(
+                modifier = Modifier
+                    .width(450.dp)
+                    .padding(10.dp, 0.dp, 0.dp, 0.dp)
+            ) {
+                Divider(
+                    color = Color(0xFF6D4C41),
+                    thickness = 2.dp,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
 
             // Título "Perfiles de Emprendedores"
             Text(
-                text = "Perfiles de Emprendedores",
-                style = MaterialTheme.typography.titleLarge,
+                text = "Emprendedores",
+                fontSize = 28.sp,
+                color = Color(0xFF6D4C41),
                 fontWeight = FontWeight.Bold,
+                fontFamily = cabinFamily,
+                textAlign = TextAlign.Left,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .padding(start = 8.dp, top = 15.dp, bottom = 3.dp)
             )
             // Lista horizontal de perfiles de emprendedores
             LazyRow(
@@ -93,16 +107,51 @@ fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavC
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = "¿Estás listo para dejarte llevar?")
+            Text(
+                text = "Posts",
+                fontSize = 28.sp,
+                color = Color(0xFF6D4C41),
+                fontWeight = FontWeight.Bold,
+                fontFamily = cabinFamily,
+                textAlign = TextAlign.Left,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, bottom = 3.dp)
+            )
+
+            // Lista de publicaciones
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(state.activities) { adventure ->
+                    AdventureCard(adventure = adventure)
+                }
+            }
+
+            Text(
+                text = "¿Estás listo para dejarte llevar?",
+                color = Color(0xFF4B342C),
+                fontFamily = cabinFamily
+            )
             Button(
                 onClick = { /* Acción para el botón */ },
                 modifier = Modifier
                     .widthIn()
                     .padding(vertical = 16.dp),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF6D4C41)
+                )
             ) {
-                Text(text = "SORPRÉNDEME", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = "SORPRÉNDEME",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White, // Text color
+                    fontFamily = cabinFamily
+                )
             }
         }
     }
@@ -112,30 +161,37 @@ fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavC
 fun AdventureCard(adventure: Adventure) {
     Card(
         modifier = Modifier
-            .width(200.dp)
-            .height(250.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+            .padding(8.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(3.dp),
+        border = BorderStroke(1.dp, Color(0xFFA6A2A2)),
+        shape = RoundedCornerShape(8.dp)
     ) {
         Column {
             Image(
-                painter = rememberImagePainter(data = adventure.image),
-                contentDescription = "Adventure Image",
+                painter = rememberImagePainter(adventure.image),
+                contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp),
+                    .padding(13.dp, 13.dp, 13.dp, 0.dp)
+                    .size(230.dp, 160.dp)
+                    .fillMaxWidth(),
                 contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Column(
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Text(text = adventure.nameActivity, style = MaterialTheme.typography.titleLarge)
-                Text(text = adventure.description, style = MaterialTheme.typography.bodyMedium, maxLines = 2)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Duration: ${adventure.timeDuration} mins", style = MaterialTheme.typography.labelSmall)
-                Text(text = "Cost: ${adventure.cost}", style = MaterialTheme.typography.labelSmall)
-            }
+            Text(
+                text = "Actividad: ",
+                fontFamily = cabinFamily,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF000000),
+                modifier = Modifier.padding(18.dp, 5.dp, 2.dp, 0.dp)
+            )
+            Text(
+                text = adventure.nameActivity,
+                fontFamily = cabinFamily,
+                modifier = Modifier.padding(18.dp, 0.dp, 2.dp, 4.dp),
+                fontSize = 16.sp,
+                color = Color(0xFF000000),
+            )
         }
     }
 }
@@ -144,25 +200,38 @@ fun AdventureCard(adventure: Adventure) {
 fun EntrepreneurCard(entrepreneur: ProfileEntrepreneur) {
     Card(
         modifier = Modifier
-            .width(150.dp)
-            .height(200.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+            .padding(8.dp)
+            .width(200.dp),
+        elevation = CardDefaults.cardElevation(3.dp),
+        border = BorderStroke(1.dp, Color(0xFFA6A2A2)),
+        shape = RoundedCornerShape(8.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(8.dp)
         ) {
             Image(
-                painter = rememberImagePainter(data = entrepreneur.imageUrl),
-                contentDescription = "Entrepreneur Image",
+                painter = rememberImagePainter(entrepreneur.imageUrl),
+                contentDescription = null,
                 modifier = Modifier
-                    .size(100.dp)
-                    .padding(8.dp),
+                    .size(100.dp).padding(5.dp),
                 contentScale = ContentScale.Crop
             )
-            Text(text = entrepreneur.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text(text = entrepreneur.email, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+            Text(
+                text = entrepreneur.name,
+                fontFamily = cabinFamily,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF000000),
+                modifier = Modifier.padding(top = 8.dp)
+            )
+            Text(
+                text = entrepreneur.email,
+                fontFamily = cabinFamily,
+                fontSize = 14.sp,
+                color = Color(0xFF000000),
+                modifier = Modifier.padding(start = 15.dp)
+            )
         }
     }
 }
