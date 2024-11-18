@@ -7,7 +7,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +27,7 @@ import com.example.aventurape_androidmobile.domains.adventurer.models.Adventure
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.HomeAdventurerViewModel
 import com.example.aventurape_androidmobile.domains.entrepreneur_publication.models.ProfileE
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
+import org.intellij.lang.annotations.JdkConstants.VerticalScrollBarPolicy
 
 
 // Define custom colors based on the primary color #765532
@@ -38,145 +41,153 @@ private val TextPrimaryColor = Color(0xFF2D1810)
 @Composable
 fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavController) {
     val state = viewModel.state
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(Unit) {
         viewModel.loadActivities()
         viewModel.loadEntrepreneurs()
     }
 
-    Column(
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .background(BackgroundColor)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (state.isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                color = PrimaryColor
-            )
-        } else if (state.errorMessage != null) {
-            Text(
-                text = state.errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-        } else {
-            // Original header layout
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.aventurapelogo),
-                    contentDescription = "Logo AventuraPe",
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(bottom = 80.dp), // Extra padding for bottom content
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (state.isLoading) {
+                CircularProgressIndicator(
                     modifier = Modifier
-                        .size(width = 150.dp, height = 30.dp)
-                        .padding(10.dp, 0.dp, 0.dp, 0.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 16.dp),
+                    color = PrimaryColor
                 )
-            }
+            } else if (state.errorMessage != null) {
+                Text(
+                    text = state.errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            } else {
+                // Header
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.aventurapelogo),
+                        contentDescription = "Logo AventuraPe",
+                        modifier = Modifier
+                            .height(40.dp)
+                            .aspectRatio(5f)
+                    )
+                }
 
-            Box(
-                modifier = Modifier
-                    .width(450.dp)
-                    .padding(10.dp, 0.dp, 0.dp, 0.dp)
-            ) {
                 Divider(
                     color = PrimaryColor,
-                    thickness = 2.dp,
-                    modifier = Modifier.align(Alignment.Center)
+                    thickness = 1.5.dp,
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                // Entrepreneurs Section
+                SectionWithLazyRow(
+                    title = "Emprendedores",
+                    items = state.entrepreneurs,
+                    cardContent = { entrepreneur ->
+                        EntrepreneurCard(entrepreneur = entrepreneur)
+                    }
+                )
 
-            // Entrepreneurs Section
-            SectionHeader(
-                title = "Emprendedores",
-                backgroundColor = PrimaryVariantLight
-            )
+                // Adventures Section
+                SectionWithLazyRow(
+                    title = "Posts",
+                    items = state.activities,
+                    cardContent = { adventure ->
+                        AdventureCard(adventure = adventure)
+                    }
+                )
 
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(state.entrepreneurs) { entrepreneur ->
-                    EntrepreneurCard(entrepreneur = entrepreneur)
+                // Call to Action
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "¿Estás listo para dejarte llevar?",
+                        color = TextPrimaryColor,
+                        fontFamily = cabinFamily,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = { navController.navigate("aventurate_screen") },
+                        modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .height(48.dp),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = PrimaryColor
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 4.dp
+                        )
+                    ) {
+                        Text(
+                            text = "SORPRÉNDEME",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = SurfaceColor,
+                            fontFamily = cabinFamily
+                        )
+                    }
                 }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Posts Section
-            SectionHeader(
-                title = "Posts",
-                backgroundColor = PrimaryVariantLight
-            )
-
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(state.activities) { adventure ->
-                    AdventureCard(adventure = adventure)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Text(
-                text = "¿Estás listo para dejarte llevar?",
-                color = TextPrimaryColor,
-                fontFamily = cabinFamily,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium
-            )
-
-            Button(
-                onClick = {
-                    navController.navigate("aventurate_screen")
-                },
-                modifier = Modifier
-                    .padding(vertical = 16.dp)
-                    .height(48.dp),
-                shape = RoundedCornerShape(24.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PrimaryColor
-                ),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 4.dp
-                )
-            ) {
-                Text(
-                    text = "SORPRÉNDEME",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = SurfaceColor,
-                    fontFamily = cabinFamily
-                )
             }
         }
     }
 }
 
+
 @Composable
-fun SectionHeader(title: String, backgroundColor: Color) {
-    Text(
-        text = title,
-        fontSize = 22.sp,
-        color = PrimaryColor,
-        fontWeight = FontWeight.Bold,
-        fontFamily = cabinFamily,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 7.dp, bottom = 1.dp)
-    )
+fun <T> SectionWithLazyRow(
+    title: String,
+    items: List<T>,
+    cardContent: @Composable (T) -> Unit
+) {
+    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Text(
+            text = title,
+            fontSize = 22.sp,
+            color = PrimaryColor,
+            fontWeight = FontWeight.Bold,
+            fontFamily = cabinFamily,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp)
+        ) {
+            items(items) { item ->
+                cardContent(item)
+            }
+        }
+    }
 }
 
+// Keep existing EntrepreneurCard and AdventureCard implementations
 @Composable
 fun AdventureCard(adventure: Adventure) {
     Card(

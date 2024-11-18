@@ -4,12 +4,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
@@ -40,48 +43,55 @@ fun AccountInformationA(
         }
     }
 
-
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Color(0xFFFAF6F3)
-    ) {
-        Column(
+    Scaffold { paddingValues ->
+        Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(16.dp)
-        ) {
-
-            // Header
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                .padding(
+                    top = 0.dp,
+                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                    bottom = paddingValues.calculateBottomPadding()
                 ),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 2.dp
-                )
+            color = Color(0xFFFAF6F3)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(16.dp),
             ) {
-                Text(
-                    text = "Información de la cuenta",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xBC765532),
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color(0xBC765532)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Información de la cuenta",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xBC765532)
+                    )
+                }
 
-            if (viewModelA.profileExists) {
-                DisplayProfile(state)
-            } else {
-                EditProfile(state, viewModelA)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (viewModelA.profileExists) {
+                    DisplayProfile(state)
+                } else {
+                    EditProfile(state, viewModelA)
+                }
             }
         }
     }
 }
-
 @Composable
 private fun DisplayProfile(state: ProfileStateA) {
     Card(
@@ -112,7 +122,6 @@ private fun DisplayProfile(state: ProfileStateA) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditProfile(
     state: ProfileStateA,

@@ -18,6 +18,12 @@ import com.example.aventurape_androidmobile.domains.entrepreneur_publication.vie
 import com.example.aventurape_androidmobile.navigation.NavScreenAdventurer
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.ui.unit.LayoutDirection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,46 +46,55 @@ fun AccountInformationE(
         }
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Color(0xFFFAF6F3)
-    ) {
-        Column(
+    Scaffold { paddingValues ->
+        Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(16.dp)
-        ) {
-            // Header
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                .padding(
+                    top = 0.dp,
+                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                    bottom = paddingValues.calculateBottomPadding()
                 ),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 2.dp
-                )
+            color = Color(0xFFFAF6F3),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(16.dp),
             ) {
-                Text(
-                    text = "Información de la Empresa",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xBC765532),
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color(0xBC765532)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Información de la Empresa",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xBC765532)
+                    )
+                }
 
-            if (viewModelE.profileExists) {
-                DisplayProfile(state)
-            } else {
-                EditProfile(state, viewModelE)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (viewModelE.profileExists) {
+                    DisplayProfile(state)
+                } else {
+                    EditProfile(state, viewModelE)
+                }
             }
         }
     }
 }
-
 @Composable
 private fun DisplayProfile(state: ProfileStateE) {
     Card(
@@ -101,7 +116,6 @@ private fun DisplayProfile(state: ProfileStateE) {
             Divider(color = Color(0xFFEEE6E0))
             ProfileItem("Ciudad", state.addressCity)
             ProfileItem("País", state.addressCountry)
-            ProfileItem("Dirección", state.addressStreet)
             ProfileItem("Código postal", state.addressPostalCode)
 
             Divider(color = Color(0xFFEEE6E0))

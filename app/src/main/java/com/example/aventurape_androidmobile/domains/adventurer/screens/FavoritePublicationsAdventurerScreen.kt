@@ -8,7 +8,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
@@ -23,7 +26,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -48,7 +53,7 @@ fun FavoritePublicationsAdventurerScreen(navController: NavController, profileId
     // Custom color scheme
     val primaryBrown = Color(0xFF765532)
     val lightBrown = Color(0xFF8B6B4A)
-    val veryLightBrown = Color(0xFFF0E6DE)
+    val veryLightBrown = Color(0xFFFAF6F3)
     val darkBrown = Color(0xFF5C4227)
     val accentBrown = Color(0xFFD4BBA7)
 
@@ -57,99 +62,113 @@ fun FavoritePublicationsAdventurerScreen(navController: NavController, profileId
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "Mis Aventuras Favoritas",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                navigationIcon = {
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+    ) { paddingValues ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    top = 0.dp,
+                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                    bottom = paddingValues.calculateBottomPadding()
+                ),
+            color = Color(0xFFFAF6F3)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(veryLightBrown),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = "Back",
-                            tint = Color.White
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color(0xBC765532)
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = primaryBrown,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
-                )
-            )
-        },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        containerColor = veryLightBrown
-    ) { paddingValues ->
-        SwipeRefresh(
-            state = swipeRefreshState,
-            onRefresh = { viewModel.loadFavoriteAdventures(profileId) }
-        ) {
-            if (favoritePublications.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
                     Text(
-                        text = "No tienes aventuras favoritas aún",
-                        color = darkBrown,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        "Mis Aventuras Favoritas",
+                        color = Color(0xBC765532),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
-            } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(
-                        top = paddingValues.calculateTopPadding() + 16.dp,
-                        bottom = 16.dp,
-                        start = 16.dp,
-                        end = 16.dp
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                SwipeRefresh(
+                    state = swipeRefreshState,
+                    onRefresh = { viewModel.loadFavoriteAdventures(profileId) }
                 ) {
-                    items(favoritePublications) { adventure ->
-                        AdventureCard(
-                            adventure = adventure,
-                            onDetailClick = {
-                                navController.navigate("detail_adventure/${adventure.Id}")
-                            },
-                            onDeleteClick = {
-                                coroutineScope.launch {
-                                    viewModel.deleteFavoritePublication(profileId, adventure.Id) { response ->
-                                        if (response != null) {
-                                            coroutineScope.launch {
-                                                snackbarHostState.showSnackbar(
-                                                    message = "Aventura eliminada de favoritos",
-                                                    duration = SnackbarDuration.Short
-                                                )
-                                                viewModel.loadFavoriteAdventures(profileId)
-                                            }
-                                        } else {
-                                            coroutineScope.launch {
-                                                snackbarHostState.showSnackbar(
-                                                    message = "Error al eliminar de favoritos",
-                                                    duration = SnackbarDuration.Short
-                                                )
+                    if (favoritePublications.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "No tienes aventuras favoritas aún",
+                                color = darkBrown,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    } else {
+                        LazyColumn(
+                            contentPadding = PaddingValues(
+                                top = 16.dp,
+                                bottom = 16.dp,
+                                start = 16.dp,
+                                end = 16.dp
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(favoritePublications) { adventure ->
+                                AdventureCard(
+                                    adventure = adventure,
+                                    onDetailClick = {
+                                        navController.navigate("detail_adventure/${adventure.Id}")
+                                    },
+                                    onDeleteClick = {
+                                        coroutineScope.launch {
+                                            viewModel.deleteFavoritePublication(profileId, adventure.Id) { response ->
+                                                if (response != null) {
+                                                    coroutineScope.launch {
+                                                        snackbarHostState.showSnackbar(
+                                                            message = "Aventura eliminada de favoritos",
+                                                            duration = SnackbarDuration.Short
+                                                        )
+                                                        viewModel.loadFavoriteAdventures(profileId)
+                                                    }
+                                                } else {
+                                                    coroutineScope.launch {
+                                                        snackbarHostState.showSnackbar(
+                                                            message = "Error al eliminar de favoritos",
+                                                            duration = SnackbarDuration.Short
+                                                        )
+                                                    }
+                                                }
                                             }
                                         }
-                                    }
-                                }
-                            },
-                            colors = CardColors(
-                                primaryBrown = primaryBrown,
-                                lightBrown = lightBrown,
-                                darkBrown = darkBrown,
-                                accentBrown = accentBrown
-                            )
-                        )
+                                    },
+                                    colors = CardColors(
+                                        primaryBrown = primaryBrown,
+                                        lightBrown = lightBrown,
+                                        darkBrown = darkBrown,
+                                        accentBrown = accentBrown
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -180,7 +199,6 @@ fun AdventureCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Image and gradient overlay
             Box(modifier = Modifier.fillMaxSize()) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -191,8 +209,6 @@ fun AdventureCard(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
-
-                // Gradient overlay
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -208,13 +224,11 @@ fun AdventureCard(
                 )
             }
 
-            // Content overlay
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(16.dp)
             ) {
-                // Title and price section
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -235,12 +249,6 @@ fun AdventureCard(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Icon(
-                            Icons.Default.LocationOn,
-                            contentDescription = null,
-                            tint = colors.accentBrown,
-                            modifier = Modifier.size(20.dp)
-                        )
                         Text(
                             text = "S/ ${adventure.cost}",
                             color = colors.accentBrown,
