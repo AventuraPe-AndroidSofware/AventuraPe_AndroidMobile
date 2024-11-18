@@ -15,10 +15,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.aventurape_androidmobile.domains.adventurer.screens.AccountAdventurer
 import com.example.aventurape_androidmobile.domains.adventurer.screens.AdventureScreen
+import com.example.aventurape_androidmobile.domains.adventurer.screens.AventurateScreen
 import com.example.aventurape_androidmobile.domains.adventurer.screens.DetailView
 import com.example.aventurape_androidmobile.domains.adventurer.screens.FavoritePublicationsAdventurerScreen
 import com.example.aventurape_androidmobile.domains.authentication.screens.*
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.AdventureViewModel
+import com.example.aventurape_androidmobile.domains.adventurer.viewModels.AventurateViewModel
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.HomeAdventurerViewModel
 import com.example.aventurape_androidmobile.domains.adventurer.viewModels.ProfileViewModelA
 import com.example.aventurape_androidmobile.domains.authentication.screens.viewModels.LoginViewModel
@@ -37,7 +39,7 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
     val homeAdventurerViewModel: HomeAdventurerViewModel = viewModel()
     var userRole = PreferenceManager.getUserRoles(context);
     val username = PreferenceManager.getUsername(context)
-
+    val aventurateViewModel: AventurateViewModel = viewModel()
     NavHost(
         navController = navController,
         startDestination = NavScreenAdventurer.welcome_screen.name
@@ -65,6 +67,9 @@ fun AdventurerNavigation(navController: NavHostController, context: Context) {
                 // Handle unauthorized access or redirect
                 navController.navigate(NavScreenAdventurer.error_screen.name)
             }
+        }
+        composable("aventurate_screen") {
+            AventurateScreen(viewModel = aventurateViewModel, navController = navController)
         }
         composable(NavScreenAdventurer.adventure_screen.name) { //SEARCH
             if (userRole != null && userRole!!.isNotEmpty()) {

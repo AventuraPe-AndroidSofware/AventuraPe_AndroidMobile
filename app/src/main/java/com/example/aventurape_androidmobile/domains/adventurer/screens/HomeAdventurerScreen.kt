@@ -72,7 +72,7 @@ fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavC
                     painter = painterResource(id = R.drawable.aventurapelogo),
                     contentDescription = "Logo AventuraPe",
                     modifier = Modifier
-                        .size(width = 150.dp, height = 100.dp)
+                        .size(width = 150.dp, height = 30.dp)
                         .padding(10.dp, 0.dp, 0.dp, 0.dp)
                 )
             }
@@ -127,7 +127,7 @@ fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavC
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(5.dp))
 
             Text(
                 text = "¿Estás listo para dejarte llevar?",
@@ -138,7 +138,9 @@ fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavC
             )
 
             Button(
-                onClick = { /* Acción para el botón */ },
+                onClick = {
+                    navController.navigate("aventurate_screen")
+                },
                 modifier = Modifier
                     .padding(vertical = 16.dp)
                     .height(48.dp),
@@ -165,13 +167,13 @@ fun HomeAdventurerScreen(viewModel: HomeAdventurerViewModel, navController: NavC
 fun SectionHeader(title: String, backgroundColor: Color) {
     Text(
         text = title,
-        fontSize = 28.sp,
+        fontSize = 22.sp,
         color = PrimaryColor,
         fontWeight = FontWeight.Bold,
         fontFamily = cabinFamily,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, bottom = 3.dp)
+            .padding(start = 7.dp, bottom = 1.dp)
     )
 }
 
@@ -230,7 +232,7 @@ fun AdventureCard(adventure: Adventure) {
                     overflow = TextOverflow.Ellipsis
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(1.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -244,7 +246,7 @@ fun AdventureCard(adventure: Adventure) {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(1.dp))
 
                 Text(
                     text = adventure.description,
