@@ -8,7 +8,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.content.Context
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,15 +21,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.aventurape_androidmobile.R
+import com.example.aventurape_androidmobile.domains.adventurer.models.Adventure
 import com.example.aventurape_androidmobile.ui.theme.cabinFamily
-import com.google.ai.client.generativeai.Chat
+import com.example.aventurape_androidmobile.utils.models.PublicationByOrderResponse
+
+val PrimaryBrown = Color(0xFF765532)
+val LightBrown = Color(0xFF9B7B5B)
+val DarkBrown = Color(0xFF513A23)
+val BackgroundBrown = Color(0xFFF5E6D3)
+val TextBrown = Color(0xFF2D1810)
 
 @Composable
 fun StaticsEntrepreneurScreen(context: Context) {
@@ -58,224 +61,276 @@ fun StaticsEntrepreneurScreen(context: Context) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
+            .background(BackgroundBrown)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
+        // Header
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(PrimaryBrown)
+                .padding(16.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.aventurapelogo),
-                contentDescription = "Logo AventuraPe",
-                modifier = Modifier
-                    .size(width = 150.dp, height = 100.dp)
-                    .padding(10.dp, 0.dp, 0.dp, 0.dp)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.ic_refresh),
-                contentDescription = "Refresh Icon",
-                modifier = Modifier
-                    .size(width = 30.dp, height = 30.dp)
-                    .padding(5.dp, 0.dp, 0.dp, 0.dp)
-                    .clickable {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Estadísticas",
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontFamily = cabinFamily,
+                    fontWeight = FontWeight.Bold
+                )
+                IconButton(
+                    onClick = {
                         when (selectedTab) {
                             "Mis publicaciones" -> statisticsViewModel.getUserAdventures(entrepreneurId)
                             "Más comentados" -> statisticsViewModel.getTop5AdventuresByComments()
                             "Mejores puntuaciones" -> statisticsViewModel.getFavoritePublicationsByProfileIdOrderedByRating(entrepreneurId)
                         }
-                    }
-            )
-        }
-        Divider(
-            color = Color(0xFF6D4C41),
-            thickness = 2.dp,
-        )
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = selectedTab)
-            IconButton(onClick = { expanded = true }) {
-                Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
+                    },
+                    modifier = Modifier
+                        .background(Color.White, RoundedCornerShape(8.dp))
+                        .size(40.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_refresh),
+                        contentDescription = "Refresh",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        }
+
+        // Tab Selector
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(LightBrown)
+                .padding(16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .background(Color.White, RoundedCornerShape(8.dp))
+                    .clickable { expanded = true }
+                    .padding(12.dp)
+            ) {
+                Text(
+                    text = selectedTab,
+                    color = TextBrown,
+                    fontFamily = cabinFamily,
+                    fontWeight = FontWeight.Medium
+                )
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                    tint = TextBrown
+                )
+            }
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.background(Color.White)
+            ) {
                 tabs.forEach { tab ->
-                    DropdownMenuItem(onClick = {
-                        selectedTab = tab
-                        expanded = false
-                    }) {
-                        Text(text = tab)
+                    DropdownMenuItem(
+                        onClick = {
+                            selectedTab = tab
+                            expanded = false
+                        }
+                    ) {
+                        Text(
+                            text = tab,
+                            color = TextBrown,
+                            fontFamily = cabinFamily
+                        )
                     }
                 }
             }
         }
 
         if (isLoading || statisticsViewModel.isLoadingTopAdventures) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(BackgroundBrown)
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = PrimaryBrown
+                )
             }
         } else {
-            when (selectedTab) {
-                "Mis publicaciones" -> {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                item {
                     Text(
-                        text = "Estadisticas",
-                        fontSize = 28.sp,
-                        color = Color(0xFF000000),
+                        text = when (selectedTab) {
+                            "Mis publicaciones" -> "Mis Aventuras Publicadas"
+                            "Más comentados" -> "Top 5 Aventuras Más Comentadas"
+                            else -> "Aventuras Mejor Calificadas"
+                        },
+                        fontSize = 24.sp,
+                        color = TextBrown,
                         fontWeight = FontWeight.Bold,
                         fontFamily = cabinFamily,
-                        textAlign = TextAlign.Left,
-                        modifier = Modifier.padding(20.dp, 20.dp, 0.dp, 0.dp)
+                        modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    Text(
-                        text = "¡Tus mejores publicaciones las encuentras aquí!",
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(start = 30.dp, top = 15.dp, end = 5.dp, bottom = 10.dp)
-                    )
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
+                }
+
+                when (selectedTab) {
+                    "Mis publicaciones" -> {
                         items(userAdventures.value) { adventure ->
-                            Card(
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .fillMaxWidth(),
-                                elevation = CardDefaults.cardElevation(8.dp),
-                                border = BorderStroke(1.dp, Color(0xFFA6A2A2)),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(adventure.image)
-                                            .build(),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(350.dp, 200.dp)
-                                            .fillMaxWidth(),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = adventure.nameActivity,
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        text = adventure.description,
-                                        fontSize = 16.sp
-                                    )
-                                    Text(
-                                        text = "Comentarios: ${statisticsViewModel.countCommentsForAdventure(adventure.Id)}",
-                                        fontSize = 14.sp,
-                                        textAlign = TextAlign.Start,
-                                        color = Color.Gray
-                                    )
-                                }
-                            }
+                            AdventureCard(adventure, statisticsViewModel)
                         }
                     }
-                }
-                "Más comentados" -> {
-                    Text(
-                        text = "Top 5 de aventuras con más comentarios",
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(20.dp, 20.dp, 0.dp, 10.dp)
-                    )
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
+                    "Más comentados" -> {
                         items(topAdventures.value) { adventure ->
-                            Card(
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .fillMaxWidth(),
-                                elevation = CardDefaults.cardElevation(8.dp),
-                                border = BorderStroke(1.dp, Color(0xFFA6A2A2)),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(adventure.image)
-                                            .build(),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(350.dp, 200.dp)
-                                            .fillMaxWidth(),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = adventure.nameActivity,
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        text = adventure.description,
-                                        fontSize = 16.sp
-                                    )
-                                    Text(
-                                        text = "Comentarios: ${statisticsViewModel.countCommentsForAdventure(adventure.Id)}",
-                                        fontSize = 14.sp,
-                                        textAlign = TextAlign.Start,
-                                        color = Color.Gray
-                                    )
-                                }
-                            }
+                            AdventureCard(adventure, statisticsViewModel)
+                        }
+                    }
+                    "Mejores puntuaciones" -> {
+                        items(topRatedPublications.value) { publication ->
+                            RatedPublicationCard(publication)
                         }
                     }
                 }
-                "Mejores puntuaciones" -> {
-                    Text(
-                        text = "Top rating de las mejores aventuras",
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(20.dp, 20.dp, 0.dp, 10.dp)
+            }
+        }
+    }
+}
+
+@Composable
+fun AdventureCard(adventure: Adventure, viewModel: StatisticsViewModel) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(adventure.image)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+                contentScale = ContentScale.Crop
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = adventure.nameActivity,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = TextBrown,
+                    fontFamily = cabinFamily
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = adventure.description,
+                    fontSize = 16.sp,
+                    color = TextBrown.copy(alpha = 0.8f),
+                    fontFamily = cabinFamily
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier
+                        .background(LightBrown.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ThumbUp,
+                        contentDescription = null,
+                        tint = PrimaryBrown,
+                        modifier = Modifier.size(20.dp)
                     )
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        items(topRatedPublications.value) { publication ->
-                            Card(
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .fillMaxWidth(),
-                                elevation = CardDefaults.cardElevation(8.dp),
-                                border = BorderStroke(1.dp, Color(0xFFA6A2A2)),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(publication.image)
-                                            .build(),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(350.dp, 200.dp)
-                                            .fillMaxWidth(),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = publication.nameActivity,
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        text = publication.description,
-                                        fontSize = 16.sp
-                                    )
-                                    Text(
-                                        text = "Promedio de rating: ${publication.averageRating}",
-                                        fontSize = 14.sp,
-                                        textAlign = TextAlign.Start,
-                                        color = Color.Gray
-                                    )
-                                }
-                            }
-                        }
-                    }
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Comentarios: ${viewModel.countCommentsForAdventure(adventure.Id)}",
+                        fontSize = 14.sp,
+                        color = TextBrown,
+                        fontFamily = cabinFamily
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RatedPublicationCard(publication: PublicationByOrderResponse) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(publication.image)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+                contentScale = ContentScale.Crop
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = publication.nameActivity,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = TextBrown,
+                    fontFamily = cabinFamily
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = publication.description,
+                    fontSize = 16.sp,
+                    color = TextBrown.copy(alpha = 0.8f),
+                    fontFamily = cabinFamily
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier
+                        .background(LightBrown.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ThumbUp,
+                        contentDescription = null,
+                        tint = PrimaryBrown,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Rating promedio: ${publication.averageRating}",
+                        fontSize = 14.sp,
+                        color = TextBrown,
+                        fontFamily = cabinFamily
+                    )
                 }
             }
         }
@@ -286,6 +341,10 @@ fun StaticsEntrepreneurScreen(context: Context) {
 fun DropdownMenuItem(onClick: () -> Unit, content: @Composable () -> Unit) {
     androidx.compose.material3.DropdownMenuItem(
         onClick = onClick,
-        text = content
+        text = content,
+        colors = MenuDefaults.itemColors(
+            textColor = TextBrown,
+            leadingIconColor = PrimaryBrown
+        )
     )
 }
