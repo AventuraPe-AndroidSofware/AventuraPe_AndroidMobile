@@ -337,7 +337,6 @@ private fun DetailItem(icon: ImageVector, text: String) {
     }
 }
 
-
 @Composable
 fun FormActivity(viewModel: PublicationViewModel, navController: NavController, entrepreneurId: Long) {
     var showDialogDatos by remember { mutableStateOf(true) }
@@ -347,6 +346,7 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
     var foto by remember { mutableStateOf("") }
     var cantidadPersonas by remember { mutableStateOf("") }
     var costo by remember { mutableStateOf("") }
+    var useGallery by remember { mutableStateOf(true) }
     val snackbarHostState = remember { SnackbarHostState() }
 
     val primaryColor = Color(0xFF765532)
@@ -485,24 +485,69 @@ fun FormActivity(viewModel: PublicationViewModel, navController: NavController, 
                         )
                     }
                     item {
-                        FormField(
-                            label = "Foto",
-                            value = foto,
-                            onValueChange = { foto = it },
-                            placeholder = "Seleccionar imagen",
-                            primaryColor = primaryColor,
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = { launcher.launch("image/*") }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.Add,
-                                        contentDescription = "Seleccionar imagen",
-                                        tint = primaryColor
-                                    )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = "Usar galería",
+                                color = primaryColor,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Switch(
+                                checked = useGallery,
+                                onCheckedChange = { useGallery = it },
+                                colors = SwitchDefaults.colors(
+                                    checkedThumbColor = primaryColor,
+                                    uncheckedThumbColor = lightColor
+                                )
+                            )
+                        }
+                    }
+                    item {
+                        if (useGallery) {
+                            FormField(
+                                label = "Foto",
+                                value = foto,
+                                onValueChange = { foto = it },
+                                placeholder = "Seleccionar imagen",
+                                primaryColor = primaryColor,
+                                trailingIcon = {
+                                    IconButton(
+                                        onClick = { launcher.launch("image/*") }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Add,
+                                            contentDescription = "Seleccionar imagen",
+                                            tint = primaryColor
+                                        )
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        } else {
+                            FormField(
+                                label = "Foto (URL)",
+                                value = foto,
+                                onValueChange = { foto = it },
+                                placeholder = "URL de la imagen",
+                                primaryColor = primaryColor
+                            )
+                        }
+                    }
+                    item {
+                        if (foto.isNotEmpty()) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(foto)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = "Selected Image",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
                     item {
                         Row(
